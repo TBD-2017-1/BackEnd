@@ -1,0 +1,17 @@
+# intelliJ IDEA configuration files
+.idea/*
+
+#Eclipse config files
+.settings/*
+.classpath
+.project
+
+#NetBeans config files
+.nb-gradle/*
+
+# Gradle files
+build/*
+.gradle/*
+/bin/*
+/bin/
+/build/

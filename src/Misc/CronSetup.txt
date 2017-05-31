@@ -1,0 +1,6 @@
+en terminal:
+crontab -e
+
+agregar al final del archivo:
+* * * * * curl -X POST http://localhost:8080/backend/cron/ejb.index
+0 0 * * * curl -X POST http://localhost:8080/backend/cron/metricas
