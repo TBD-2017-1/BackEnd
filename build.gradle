@@ -10,10 +10,11 @@ repositories {
 }
 
 dependencies {
+    compile 'javax:javaee-api:7.0'
+    compile 'javax.ws.rs:javax.ws.rs-api:2.0.1'
     compile 'org.mongodb:mongo-java-driver:3.2.2'
     compile 'mysql:mysql-connector-java:5.1.30'
     compile group: 'org.twitter4j', name: 'twitter4j-stream', version: '4.0.5'
     compile group: 'org.twitter4j', name: 'twitter4j-core', version: '4.0.5'
     compile group: 'com.google.code.gson', name: 'gson', version: '2.3.1'
-
 }
