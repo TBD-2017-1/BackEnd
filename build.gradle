@@ -5,8 +5,13 @@ apply plugin: 'war'
 
 sourceCompatibility = 1.8
 
+libsDirName = '../libs'
+
 repositories {
     mavenCentral()
+    flatDir{
+        dirs 'libs'
+    }
 }
 
 dependencies {
@@ -17,4 +22,9 @@ dependencies {
     compile group: 'org.twitter4j', name: 'twitter4j-stream', version: '4.0.5'
     compile group: 'org.twitter4j', name: 'twitter4j-core', version: '4.0.5'
     compile group: 'com.google.code.gson', name: 'gson', version: '2.3.1'
+    //Neo4j Libraries
+    compile name: 'neo4j-java-driver-1.0.6'
+    compile name: 'neo4j-java-driver-1.0.6-javadoc'
+    compile name: 'neo4j-java-driver-1.0.6-sources'
+    compile name: 'neo4j-java-driver-1.0.6-tests'
 }
