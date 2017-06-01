@@ -15,3 +15,6 @@ build/*
 /bin/*
 /bin/
 /build/
+
+#War
+libs/backend.war

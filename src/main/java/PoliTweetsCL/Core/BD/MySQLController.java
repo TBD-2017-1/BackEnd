@@ -1,7 +1,12 @@
 package PoliTweetsCL.Core.BD;
 
-import java.io.File;
-import java.io.FileInputStream;
+import PoliTweetsCL.Core.Resources.Config;
+import PoliTweetsCL.Core.Resources.Resources;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Singleton;
+import javax.ejb.Stateless;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -9,64 +14,26 @@ import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Logger;
 
 
 public class MySQLController {
-
     private Connection conn = null;
-
-    public MySQLController() {
-        Properties prop = null;
-        String host;
-        String user;
-        String pass;
-        try{
-            prop = new Properties();
-            FileInputStream file;
-            File jarPath=new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
-            String propertiesPath=jarPath.getParent();
-            prop.load(new FileInputStream(propertiesPath+ "/appDefault.properties"));
-        }catch (Exception e){
-            prop = null;
-        }finally {
-            if(prop == null){
-                host = "localhost";
-                user = "root";
-                pass = "DigitalOceanServer";
-            }else {
-                host = prop.getProperty("mysql.host");
-                user = prop.getProperty("mysql.user");
-                pass = prop.getProperty("mysql.pass");
-            }
-        }
-
-
-        try {
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-            conn = DriverManager.getConnection("jdbc:mysql://"+host+"/PoliTweets?user="+user+"&password="+pass);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
 
     public MySQLController(Properties prop) {
         String host;
         String user;
         String pass;
 
-        if(prop == null){
-            host = "localhost";
-            user = "root";
-            pass = "DigitalOceanServer";
-        }else {
-            host = prop.getProperty("mysql.host");
-            user = prop.getProperty("mysql.user");
-            pass = prop.getProperty("mysql.pass");
-        }
+        if(prop == null) prop = new Properties();
+
+        host = prop.getProperty("mysql.host","localhost");
+        user = prop.getProperty("mysql.user","root");
+        pass = prop.getProperty("mysql.pass","DigitalOceanServer");
 
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            conn = DriverManager.getConnection("jdbc:mysql://"+host+"/PoliTweets?user="+user+"&password="+pass);
+            conn = DriverManager.getConnection("jdbc:mysql://"+host+"/PoliTweets?user="+user+"&password="+pass+"&useSSL=false");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
