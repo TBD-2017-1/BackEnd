@@ -8,20 +8,22 @@ import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
 import twitter4j.StatusListener;
 
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Objects;
+import java.util.Properties;
+
 
 public class TwitterListener implements StatusListener{
-	Config config;
+	private MongoDBController db;
 
 	private SentimentAnalyzer sentimentAnalyzer;
 
-	private MongoDBController db;
 
-	public TwitterListener(){
-		config = new Config();
+	public TwitterListener(Properties prop){
+		db = new MongoDBController(prop);
 		sentimentAnalyzer = new SentimentAnalyzer();
-		db = new MongoDBController(config.getPropertiesObj());
 	}
 
 	@Override

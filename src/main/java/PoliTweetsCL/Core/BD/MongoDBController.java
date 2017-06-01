@@ -1,7 +1,8 @@
 package PoliTweetsCL.Core.BD;
 
 import PoliTweetsCL.Core.Model.*;
-import ejb.Resources;
+import PoliTweetsCL.Core.Resources.Config;
+import PoliTweetsCL.Core.Resources.Resources;
 import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -9,6 +10,11 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Singleton;
+import javax.ejb.Stateless;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,65 +22,21 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 public class MongoDBController {
-	Resources resources;
 
 	private MongoClient mongoClient;
 	private MongoDatabase db;
 	private MongoCollection<Document> tweetsCollection;
-
-	Logger logger = Logger.getLogger(getClass().getName());
-
-	/* CONSTRUCTORES */
-	public MongoDBController(){
-		resources = new Resources();
-		Properties prop = null;
-		String host;
-		String user;
-		String pass;
-		try{
-			prop = new Properties();
-			prop.load(resources.getResourceAsStream("app.properties"));
-		}catch (Exception e){
-			prop = null;
-			logger.info(e.getMessage());
-			e.printStackTrace();
-		}finally {
-			if(prop == null){
-				host = "localhost";
-				user = "admin";
-				pass = "DigitalOceanServer";
-			}else {
-				host = prop.getProperty("mongo.host");
-				user = prop.getProperty("mongo.user");
-				pass = prop.getProperty("mongo.pass");
-			}
-		}
-
-		logger.info("pass = "+pass);
-
-		// credencial
-		MongoCredential mongoCredential = MongoCredential.createScramSha1Credential(user, "admin", pass.toCharArray());
-		// cliente
-		mongoClient = new MongoClient(new ServerAddress(host, 27017), Arrays.asList(mongoCredential));
-		db = mongoClient.getDatabase("politweets");
-		tweetsCollection = db.getCollection("tweets");
-
-	}
 
 	public MongoDBController(Properties prop){
 		String host;
 		String user;
 		String pass;
 
-		if(prop == null){
-			host = "localhost";
-			user = "admin";
-			pass = "DigitalOceanServer";
-		}else {
-			host = prop.getProperty("mongo.host");
-			user = prop.getProperty("mongo.user");
-			pass = prop.getProperty("mongo.pass");
-		}
+		if(prop == null) prop = new Properties();
+
+		host = prop.getProperty("mongo.host","localhost");
+		user = prop.getProperty("mongo.user","admin");
+		pass = prop.getProperty("mongo.pass","DigitalOceanServer");
 
 		// credencial
 		MongoCredential mongoCredential = MongoCredential.createScramSha1Credential(user, "admin", pass.toCharArray());

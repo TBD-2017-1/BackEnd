@@ -9,6 +9,14 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    main {
+        resources {
+            srcDirs "src/main/resources"
+        }
+    }
+}
+
 dependencies {
     compile 'javax:javaee-api:7.0'
     compile 'javax.ws.rs:javax.ws.rs-api:2.0.1'

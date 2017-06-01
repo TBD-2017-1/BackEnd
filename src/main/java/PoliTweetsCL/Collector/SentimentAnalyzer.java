@@ -6,10 +6,12 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import org.apache.commons.io.IOUtils;
 
+import javax.ejb.Stateful;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+
 
 public class SentimentAnalyzer {
 

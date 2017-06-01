@@ -4,34 +4,45 @@ import PoliTweetsCL.Core.BD.MySQLController;
 import PoliTweetsCL.Core.Resources.Config;
 import twitter4j.*;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 
 @Singleton
 public class TwitterStreaming {
+	@EJB
 	private Config config;
-	private MySQLController sqlDB;
 
-	private final TwitterStream twitterStream;
+	private TwitterStream twitterStream;
 	private Set<String> keywords;
-	private final Object lock = new Object();
 	private boolean isActive;
+	private boolean initialized = false;
 
-	public TwitterStreaming() {
-		config = new Config();
-		sqlDB = new MySQLController();
-		isActive = false;
-		twitterStream = new TwitterStreamFactory().getInstance();
-		keywords = new HashSet<>();
-		keywords = sqlDB.getKeywords();
+	@PostConstruct
+	public void init() {
+		if(!initialized){
+			isActive = false;
+			twitterStream = new TwitterStreamFactory().getInstance();
+			keywords = new HashSet<>();
 
-		StatusListener listener = new TwitterListener();
-		this.twitterStream.addListener(listener);
+			Properties prop = config.getPropertiesObj();
+
+			MySQLController sqlDB = new MySQLController(prop);
+			keywords = sqlDB.getKeywords();
+
+			TwitterListener listener = new TwitterListener(prop);
+
+			this.twitterStream.addListener(listener);
+			initialized = true;
+		}
 	}
 
 	public boolean start(){
+		init();
 		if(!isActive) {
 			FilterQuery fq = new FilterQuery();
 			fq.track(keywords.toArray(new String[0]));

@@ -1,17 +1,17 @@
 package PoliTweetsCL.Core.Resources;
 
-import ejb.Resources;
-
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-@Startup
 @Singleton
 public class Config {
-	 private Resources resources;
+	@EJB
+	private Resources resources;
 
 	//Atributes
 	private Properties app;
@@ -22,13 +22,15 @@ public class Config {
 	//Methods
 	@PostConstruct
 	public void init(){
-		resources = new Resources();
 		try {
 			// cargar configuracion de politweets
 			app = new Properties();
-			app.load(resources.getResourceAsStream("app.properties"));
+
+			InputStream inputStream = resources.getResourceAsStream("app.properties");
+
+			app.load(inputStream);
 		}catch (Exception ex){
-			Logger logger = Logger.getLogger("Error cargando properties: "+ex.getMessage());
+			logger.info("Error cargando properties: "+ex.getMessage());
 			ex.printStackTrace();
 		}
 	}
