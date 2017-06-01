@@ -1,7 +1,7 @@
 package PoliTweetsCL.Core.BD;
 
-import java.io.File;
-import java.io.FileInputStream;
+import ejb.Resources;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -9,25 +9,28 @@ import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Logger;
 
 
 public class MySQLController {
+    Resources resources;
 
     private Connection conn = null;
 
+    Logger logger = Logger.getLogger(getClass().getName());
+
     public MySQLController() {
+        resources = new Resources();
         Properties prop = null;
         String host;
         String user;
         String pass;
         try{
             prop = new Properties();
-            FileInputStream file;
-            File jarPath=new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
-            String propertiesPath=jarPath.getParent();
-            prop.load(new FileInputStream(propertiesPath+ "/appDefault.properties"));
+            prop.load(resources.getResourceAsStream("app.properties"));
         }catch (Exception e){
             prop = null;
+            logger.info(e.getMessage());
         }finally {
             if(prop == null){
                 host = "localhost";
@@ -40,11 +43,11 @@ public class MySQLController {
             }
         }
 
-
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             conn = DriverManager.getConnection("jdbc:mysql://"+host+"/PoliTweets?user="+user+"&password="+pass);
         } catch (Exception ex) {
+            logger.info(ex.getMessage());
             ex.printStackTrace();
         }
     }
@@ -68,6 +71,7 @@ public class MySQLController {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             conn = DriverManager.getConnection("jdbc:mysql://"+host+"/PoliTweets?user="+user+"&password="+pass);
         } catch (Exception ex) {
+            logger.info(ex.getMessage());
             ex.printStackTrace();
         }
     }

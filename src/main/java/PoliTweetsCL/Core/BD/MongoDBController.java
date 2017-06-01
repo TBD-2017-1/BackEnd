@@ -1,6 +1,7 @@
 package PoliTweetsCL.Core.BD;
 
 import PoliTweetsCL.Core.Model.*;
+import ejb.Resources;
 import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -8,32 +9,34 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 public class MongoDBController {
+	Resources resources;
+
 	private MongoClient mongoClient;
 	private MongoDatabase db;
 	private MongoCollection<Document> tweetsCollection;
 
+	Logger logger = Logger.getLogger(getClass().getName());
+
 	/* CONSTRUCTORES */
 	public MongoDBController(){
+		resources = new Resources();
 		Properties prop = null;
 		String host;
 		String user;
 		String pass;
 		try{
 			prop = new Properties();
-			FileInputStream file;
-			File jarPath=new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
-			String propertiesPath=jarPath.getParent();
-			prop.load(new FileInputStream(propertiesPath+ "/appDefault.properties"));
+			prop.load(resources.getResourceAsStream("app.properties"));
 		}catch (Exception e){
 			prop = null;
+			logger.info(e.getMessage());
 			e.printStackTrace();
 		}finally {
 			if(prop == null){
@@ -46,6 +49,8 @@ public class MongoDBController {
 				pass = prop.getProperty("mongo.pass");
 			}
 		}
+
+		logger.info("pass = "+pass);
 
 		// credencial
 		MongoCredential mongoCredential = MongoCredential.createScramSha1Credential(user, "admin", pass.toCharArray());
