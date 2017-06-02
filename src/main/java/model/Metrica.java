@@ -18,6 +18,7 @@ public class Metrica implements Serializable {
     
     //Atributes
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="id", unique=true, nullable=false)
     private int id;
     

@@ -44,10 +44,25 @@ dependencies {
     compile name: 'neo4j-java-driver-1.0.6-tests'
 
     // Lucene
-        // Replace this line
+    compile group: 'org.apache.lucene', name: 'lucene-core', version: '4.3.0'
+    compile group: 'org.apache.lucene', name: 'lucene-queryparser', version: '4.3.0'
+    compile group: 'org.apache.lucene', name: 'lucene-analyzers-common', version: '4.3.0'
+    //compile name: 'lucene-core-6.5.1'
+    //compile name: 'lucene-queryparser-6.5.1'
+    //compile name: 'lucene-analyzers-common-6.5.1'
+    //compile name: 'lucene-codecs-6.5.1'
+    //compile name: 'lucene-queries-6.5.1'
+    //compile name: 'lucene-sandbox-6.5.1'
+    //compile name: 'lucene-core-4.3.1'
+    //compile name: 'lucene-queryparser-4.3.1'
+    //compile name: 'lucene-analyzers-common-4.3.1'
+    //compile group: 'org.apache.lucene', name: 'lucene-codecs', version: '4.3.0'
+
+
 
     // Utils
     compile group: 'com.google.code.gson', name: 'gson', version: '2.3.1'
+    compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
     compile 'org.slf4j:slf4j-api:1.7.5'
     compile 'org.slf4j:slf4j-simple:1.7.5'
     compile group: 'commons-io', name: 'commons-io', version: '2.5'

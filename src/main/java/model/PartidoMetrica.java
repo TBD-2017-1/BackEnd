@@ -18,6 +18,7 @@ public class PartidoMetrica implements Serializable {
 
     //Atributes
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="id", nullable=false, unique=true)
     private int id;
 

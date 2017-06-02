@@ -18,3 +18,4 @@ build/*
 
 #War
 libs/backend.war
+/OtherFiles/
