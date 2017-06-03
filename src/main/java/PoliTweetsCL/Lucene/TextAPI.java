@@ -27,8 +27,10 @@ import javax.ejb.Singleton;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.logging.Logger;
+import javax.ejb.LocalBean;
 
 @Singleton
+@LocalBean
 public class TextAPI {
     @EJB
     private Config config;

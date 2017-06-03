@@ -86,6 +86,7 @@ public class MetricaService {
         pm.setValor(valor);
         pm.setMetrica_politico(m);
         pm.setPolitico_metrica(p.get(2));
+        logger.info(p.get(2).getKeywords().get(0).getValue());
         metricaPoliticoEJB.create(pm);
     }
     

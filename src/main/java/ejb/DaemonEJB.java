@@ -12,8 +12,10 @@ import javax.ws.rs.core.Context;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
+import javax.ejb.LocalBean;
 
 @Singleton
+@LocalBean
 public class DaemonEJB {
     @EJB
     private TwitterStreaming streaming;

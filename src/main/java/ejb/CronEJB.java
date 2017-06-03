@@ -18,8 +18,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
+import javax.ejb.LocalBean;
 
 @Singleton
+@LocalBean
 public class CronEJB {
     @EJB
     private ConglomeradoFacade conglomeradoEJB;
@@ -40,7 +42,6 @@ public class CronEJB {
     @EJB
     private Config config;
 
-    private Date now;
     private MongoDBController mongo;
 
     Logger logger = Logger.getLogger(getClass().getName());

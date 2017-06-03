@@ -7,8 +7,10 @@ import javax.ejb.Startup;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Logger;
+import javax.ejb.LocalBean;
 
 @Singleton
+@LocalBean
 public class Config {
 	@EJB
 	private Resources resources;

@@ -5,8 +5,10 @@ import javax.ejb.Stateless;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.logging.Logger;
+import javax.ejb.LocalBean;
 
 @Stateless
+@LocalBean
 public class Resources {
 
 	Logger logger = Logger.getLogger(getClass().getName());
