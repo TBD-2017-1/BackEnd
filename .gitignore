@@ -21,4 +21,4 @@ libs/backend.war
 /OtherFiles/
 
 #app.propierties
-/src/main/resources/app.properties
+src/main/resources/app.properties
