@@ -45,6 +45,11 @@ public class ConglomeradoMetrica implements Serializable {
     public ConglomeradoMetrica() {
     }
 
+    @PrePersist
+    public void setActualDate(){
+        this.fecha = new Date();
+    }
+    
     public int getId() {
         return id;
     }

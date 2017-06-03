@@ -15,7 +15,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -73,8 +73,7 @@ public class CronEJB {
 
     public void doMetricas(){
         // Guardar el tiempo de la metrica
-        long timeNow = System.currentTimeMillis();
-        now = new Date(timeNow);
+        //now = new Date();
         //now = Date.from(Instant.now().truncatedTo(ChronoUnit.HOURS));
 
         doIndex();
@@ -83,8 +82,8 @@ public class CronEJB {
 
         try {
             doMetricasPoliticos();
-            doMetricasPartidos();
-            doMetricasConglomerados();
+            //doMetricasPartidos();
+            //doMetricasConglomerados();
         }catch (Exception ex){
             logger.severe("Error al crear metrica: "+ Arrays.toString(ex.getStackTrace()));
             ex.printStackTrace();
@@ -147,7 +146,7 @@ public class CronEJB {
             Metrica metrica = metricaEJB.findByName("aprobacion");
             registro.setMetrica_politico(metrica);
             registro.setPolitico_metrica(politico);
-            registro.setFecha(now);
+            //registro.setFecha(now);
             registro.setLugar("Desconocido");
             registro.setValor(aprobacion);
 
@@ -158,7 +157,7 @@ public class CronEJB {
             registro = new PoliticoMetrica();
             registro.setMetrica_politico(metricaEJB.findByName("sentimientoPositivo"));
             registro.setPolitico_metrica(politico);
-            registro.setFecha(now);
+            //registro.setFecha(now);
             registro.setLugar("Desconocido");
             registro.setValor(positiveCount/(float)hits);
             politicoMetricaEJB.create(registro);
@@ -166,7 +165,7 @@ public class CronEJB {
             registro = new PoliticoMetrica();
             registro.setMetrica_politico(metricaEJB.findByName("sentimientoNegativo"));
             registro.setPolitico_metrica(politico);
-            registro.setFecha(now);
+            //registro.setFecha(now);
             registro.setLugar("Desconocido");
             registro.setValor(negativeCount/(float)hits);
             politicoMetricaEJB.create(registro);
@@ -174,7 +173,7 @@ public class CronEJB {
             registro = new PoliticoMetrica();
             registro.setMetrica_politico(metricaEJB.findByName("sentimientoNeutro"));
             registro.setPolitico_metrica(politico);
-            registro.setFecha(now);
+            //registro.setFecha(now);
             registro.setLugar("Desconocido");
             registro.setValor(neutralCount/(float)hits);
             politicoMetricaEJB.create(registro);
