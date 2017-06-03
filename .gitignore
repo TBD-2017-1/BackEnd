@@ -19,3 +19,6 @@ build/*
 #War
 libs/backend.war
 /OtherFiles/
+
+#app.propierties
+/src/main/resources/app.properties

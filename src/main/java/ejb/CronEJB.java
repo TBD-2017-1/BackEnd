@@ -15,7 +15,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -73,7 +73,9 @@ public class CronEJB {
 
     public void doMetricas(){
         // Guardar el tiempo de la metrica
-        now = Date.from(Instant.now().truncatedTo(ChronoUnit.HOURS));
+        long timeNow = System.currentTimeMillis();
+        now = new Date(timeNow);
+        //now = Date.from(Instant.now().truncatedTo(ChronoUnit.HOURS));
 
         doIndex();
 
