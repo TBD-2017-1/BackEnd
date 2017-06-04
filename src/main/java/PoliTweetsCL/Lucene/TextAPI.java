@@ -32,8 +32,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import javax.ejb.LocalBean;
 
 @Singleton
+@LocalBean
 public class TextAPI {
     @EJB private Config config;
     @EJB private ConglomeradoFacade conglomeradosEJB;

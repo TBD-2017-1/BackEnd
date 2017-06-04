@@ -44,6 +44,11 @@ public class PoliticoMetrica implements Serializable {
     //Methods
     public PoliticoMetrica() {
     }
+    
+    @PrePersist
+    public void setActualDate(){
+        this.fecha = new Date();
+    }
 
     public int getId() {
         return id;

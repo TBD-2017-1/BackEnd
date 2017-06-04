@@ -45,6 +45,11 @@ public class PartidoMetrica implements Serializable {
     public PartidoMetrica() {
     }
 
+    @PrePersist
+    public void setActualDate(){
+        this.fecha = new Date();
+    }
+    
     public int getId() {
         return id;
     }

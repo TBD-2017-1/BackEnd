@@ -14,21 +14,18 @@ public class CronService {
 
     @POST
     @Path("index")
-    @Consumes({"application/xml", "application/json"})
     public void doIndex(){
         cron.doIndex();
     }
 
     @POST
     @Path("newindex")
-    @Consumes({"application/xml", "application/json"})
     public void doNewIndex(){
         cron.createIndex();
     }
 
     @POST
     @Path("metricas")
-    @Consumes({"application/xml", "application/json"})
     public void doMetrica(){
         cron.doMetricas();
     }

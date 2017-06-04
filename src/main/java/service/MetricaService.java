@@ -1,5 +1,6 @@
 package service;
 
+import ejb.PoliticoMetricaFacadeEJB;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -14,6 +15,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import facade.MetricaFacade;
+import facade.PoliticoFacade;
+import facade.PoliticoMetricaFacade;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -21,12 +24,19 @@ import model.ConglomeradoMetrica;
 import model.Metrica;
 import model.PartidoMetrica;
 import model.PoliticoMetrica;
+import model.Politico;
 
 @Path("/metricas")
 public class MetricaService {
 	
     @EJB 
     MetricaFacade metricaFacadeEJB;
+    
+    @EJB
+    PoliticoMetricaFacade metricaPoliticoEJB;
+    
+    @EJB
+    PoliticoFacade politicoEJB;
 	
     Logger logger = Logger.getLogger(MetricaService.class.getName());
 	
@@ -64,6 +74,22 @@ public class MetricaService {
         return metricaFacadeEJB.findByName(nombreMetrica).getPoliticoMetrica();
     }
 	
+    @POST
+    @Path("testCreate")
+    //@Consumes({"application/xml", "application/json"})
+    public void testCreate() {
+        float valor = 50;
+        Metrica m = metricaFacadeEJB.findByName("Aprobacion");
+        List<Politico> p = politicoEJB.findAll();
+        PoliticoMetrica pm = new PoliticoMetrica();
+        pm.setLugar("Aca");
+        pm.setValor(valor);
+        pm.setMetrica_politico(m);
+        pm.setPolitico_metrica(p.get(2));
+        logger.info(p.get(2).getKeywords().get(0).getValue());
+        metricaPoliticoEJB.create(pm);
+    }
+    
     @POST
     @Consumes({"application/xml", "application/json"})
     public void create(Metrica entity) {
