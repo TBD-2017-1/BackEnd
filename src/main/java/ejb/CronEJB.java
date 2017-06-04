@@ -95,8 +95,8 @@ public class CronEJB {
 
         try {
             doMetricasPoliticos();
-            //doMetricasPartidos();
-            //doMetricasConglomerados();
+            doMetricasPartidos();
+            doMetricasConglomerados();
         }catch (Exception ex){
             logger.severe("Error al crear metrica: "+ Arrays.toString(ex.getStackTrace()));
             ex.printStackTrace();
