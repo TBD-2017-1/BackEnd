@@ -1,34 +1,19 @@
 package PoliTweetsCL.Collector;
 
-import edu.stanford.nlp.ling.CoreAnnotations;
-import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.pipeline.Annotation;
-import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+
 import org.apache.commons.io.IOUtils;
 
-import javax.ejb.Stateful;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Properties;
 import java.util.Set;
 
 
 public class SentimentAnalyzer {
-
-    private StanfordCoreNLP pipeline;
     private Set<String> positiveWords;
     private Set<String> negativeWords;
 
 
     public SentimentAnalyzer(){
-        // create coreNLP object
-        Properties props = new Properties();
-        props.setProperty("annotators","tokenize");
-        props.setProperty("tokenize.language","es");
-        props.setProperty("pos.model","edu/stanford/nlp/models/pos-tagger/spanish/spanish-distsim.tagger");
-
-        this.pipeline = new StanfordCoreNLP(props);
-
         // Load sentiment data
         this.positiveWords = new HashSet<>();
         this.negativeWords = new HashSet<>();
@@ -47,11 +32,11 @@ public class SentimentAnalyzer {
         float tokenCount = 0;
 
         if (text != null && text.length() > 0) {
-            Annotation annotation = this.pipeline.process(text);
+            // tokenizar
+            String[] tokens = text.trim().split("[\\s\\p{Punct}¿¡]+");
 
-            for (CoreLabel token: annotation.get(CoreAnnotations.TokensAnnotation.class)) {
-                // this is the text of the token
-                String word = token.get(CoreAnnotations.TextAnnotation.class).toLowerCase();
+            for (String word: tokens) {
+                word = word.toLowerCase();
 
                 if (positiveWords.contains(word)){
                     tokenCount++;

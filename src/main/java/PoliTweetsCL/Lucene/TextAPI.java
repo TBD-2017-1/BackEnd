@@ -243,10 +243,10 @@ public class TextAPI {
 
         try{
             // Preparar indice
-            SpanishAnalyzer analyzer = new SpanishAnalyzer();
+            SpanishAnalyzer analyzer = new SpanishAnalyzer(Version.LUCENE_43);
             IndexReader reader = DirectoryReader.open(dirTweets);
             IndexSearcher searcher = new IndexSearcher(reader);
-            QueryParser parser = new QueryParser("texto", analyzer);
+            QueryParser parser = new QueryParser(Version.LUCENE_43,"texto", analyzer);
 
             // construir consulta
             BooleanQuery bq =  new BooleanQuery();
@@ -295,10 +295,10 @@ public class TextAPI {
     public List<String[]> getMenciones(Tweet tweet){
         try{
             // Preparar indice
-            SpanishAnalyzer analyzer = new SpanishAnalyzer();
+            SpanishAnalyzer analyzer = new SpanishAnalyzer(Version.LUCENE_43);
             IndexReader reader = DirectoryReader.open(dirMenciones);
             IndexSearcher searcher = new IndexSearcher(reader);
-            QueryParser parser = new QueryParser("texto", analyzer);
+            QueryParser parser = new QueryParser(Version.LUCENE_43,"texto", analyzer);
 
             // construir consulta
             BooleanQuery bq =  new BooleanQuery();
