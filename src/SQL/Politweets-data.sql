@@ -32,7 +32,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `conglomerado` WRITE;
 /*!40000 ALTER TABLE `conglomerado` DISABLE KEYS */;
-INSERT INTO `conglomerado` VALUES (1,'Chile Vamos','Chile_Vamos_'),(2,'Nueva Mayoría','NuevaMayoriacl'),(3,'Yo Marco por el Cambio','NULL'),(4,'Frente Amplio','elfrente_amplio'),(5,'Sentido Futuro','Sentidofuturo'),(6,'Alternativa Democrática',NULL),(7,'Independiente',NULL);
+INSERT INTO `conglomerado` VALUES (1,'Chile Vamos','Chile_Vamos_'),(2,'Nueva Mayoría','NuevaMayoriacl'),(3,'Yo Marco por el Cambio',NULL),(4,'Frente Amplio','elfrente_amplio'),(5,'Sentido Futuro','Sentidofuturo'),(6,'Alternativa Democrática',NULL),(7,'Independiente',NULL);
 /*!40000 ALTER TABLE `conglomerado` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -80,7 +80,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `partido` WRITE;
 /*!40000 ALTER TABLE `partido` DISABLE KEYS */;
-INSERT INTO `partido` VALUES (1,1,'Unión Demócrata Independiente','udipopular'),(2,1,'Renovación Nacional','RNchile'),(3,2,'Democracia Cristiana','PDC_Chile'),(4,1,'Partido Regionalista Independiente','NULL'),(5,2,'Partido por la Democracia','PPD_Chile'),(6,2,'Partido Socialista','pschile'),(7,2,'Partido Comunista','PCdeChile'),(8,2,'Partido Radical Socialdemócrata','PRSDChile'),(9,3,'Partido Progresista','LosPROgresistas'),(10,7,'Partido Liberal','Liberales_Chile'),(11,4,'Partido Humanista','phumanista'),(12,4,'Revolución Democrática','RDemocratica'),(13,4,'Izquierda Autónoma','izqautonoma'),(14,4,'Partido Igualdad','IgualdadPartido'),(15,7,'Movimiento de izquierda revolucionario','MIRdeChile'),(16,5,'Amplitud','AmplitudChile'),(17,1,'Evolución Política','evopoli'),(18,2,'Movimiento Amplio Social','PartidoMAS_'),(19,2,'Izquierda Ciudadana','izq_ciu'),(20,5,'Ciudadanos','CiudadanosCs'),(21,7,'Partido Amplio de Izquierda Socialista','IzqSoc'),(22,6,'Movimiento Independiente Regionalista Agrario y Social',NULL),(23,7,'Independiente',NULL),(24,3,'Democracia Regional Patagónica','DmRegional');
+INSERT INTO `partido` VALUES (1,1,'Unión Demócrata Independiente','udipopular'),(2,1,'Renovación Nacional','RNchile'),(3,2,'Democracia Cristiana','PDC_Chile'),(4,1,'Partido Regionalista Independiente',NULL),(5,2,'Partido por la Democracia','PPD_Chile'),(6,2,'Partido Socialista','pschile'),(7,2,'Partido Comunista','PCdeChile'),(8,2,'Partido Radical Socialdemócrata','PRSDChile'),(9,3,'Partido Progresista','LosPROgresistas'),(10,7,'Partido Liberal','Liberales_Chile'),(11,4,'Partido Humanista','phumanista'),(12,4,'Revolución Democrática','RDemocratica'),(13,4,'Izquierda Autónoma','izqautonoma'),(14,4,'Partido Igualdad','IgualdadPartido'),(15,7,'Movimiento de izquierda revolucionario','MIRdeChile'),(16,5,'Amplitud','AmplitudChile'),(17,1,'Evolución Política','evopoli'),(18,2,'Movimiento Amplio Social','PartidoMAS_'),(19,2,'Izquierda Ciudadana','izq_ciu'),(20,5,'Ciudadanos','CiudadanosCs'),(21,7,'Partido Amplio de Izquierda Socialista','IzqSoc'),(22,6,'Movimiento Independiente Regionalista Agrario y Social',NULL),(23,7,'Independiente',NULL),(24,3,'Democracia Regional Patagónica','DmRegional');
 /*!40000 ALTER TABLE `partido` ENABLE KEYS */;
 UNLOCK TABLES;
 
