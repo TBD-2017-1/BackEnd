@@ -13,6 +13,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import PoliTweetsCL.Lucene.TextAPI;
 import facade.ConglomeradoFacade;
 import facade.KeywordFacade;
 import java.math.BigDecimal;
@@ -32,6 +33,8 @@ public class ConglomeradoService {
     ConglomeradoFacade conglomeradoFacadeEJB;
     @EJB
     KeywordFacade keywordFacadeEJB;
+    @EJB
+    TextAPI textAPI;
 	
     Logger logger = Logger.getLogger(ConglomeradoService.class.getName());
 	
@@ -96,6 +99,8 @@ public class ConglomeradoService {
         //Merge a BD
         conglomeradoFacadeEJB.edit(conglomerado);
         keywordFacadeEJB.edit(keyword);
+
+        textAPI.nuevoIndiceMenciones();
     }
 
     @PUT
@@ -127,5 +132,7 @@ public class ConglomeradoService {
         }else{
             keywordFacadeEJB.edit(keyword);   
         }
+
+        textAPI.nuevoIndiceMenciones();
     }
 }

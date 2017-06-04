@@ -3,6 +3,7 @@ package PoliTweetsCL.Collector;
 import PoliTweetsCL.Core.BD.MongoDBController;
 import PoliTweetsCL.Core.Model.Tweet;
 import PoliTweetsCL.Core.Resources.Config;
+import PoliTweetsCL.Neo4J.GraphAPI;
 import twitter4j.StallWarning;
 import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
@@ -11,19 +12,24 @@ import twitter4j.StatusListener;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.naming.InitialContext;
 import java.util.Objects;
 import java.util.Properties;
 
 
 public class TwitterListener implements StatusListener{
 	private MongoDBController db;
-
 	private SentimentAnalyzer sentimentAnalyzer;
 
 
+
 	public TwitterListener(Properties prop){
-		db = new MongoDBController(prop);
-		sentimentAnalyzer = new SentimentAnalyzer();
+		try {
+			db = new MongoDBController(prop);
+			sentimentAnalyzer = new SentimentAnalyzer();
+		}catch (Exception ex){
+			ex.printStackTrace();
+		}
 	}
 
 	@Override

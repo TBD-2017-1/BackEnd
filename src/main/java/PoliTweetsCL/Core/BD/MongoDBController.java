@@ -64,16 +64,16 @@ public class MongoDBController {
 		return Tweet.fromDocument(doc);
 	}
 
-	public Tweet[] getTextUnindexedTweets(boolean setAsIndexed){
+	public Tweet[] getUnindexedTweets(boolean setAsIndexed){
 		// obtener tweets
-		MongoCursor<Document> cursor = tweetsCollection.find(Filters.eq("textIndexed",false)).iterator();
+		MongoCursor<Document> cursor = tweetsCollection.find(Filters.eq("indexed",false)).iterator();
 		List<Tweet> tweets = new ArrayList<>();
 
 		// si esta activa la opcion de actualizar la flag
 		if (setAsIndexed){
 			tweetsCollection.updateMany(
-					Filters.eq("textIndexed",false),
-					new Document("$set", new Document("textIndexed",true))
+					Filters.eq("indexed",false),
+					new Document("$set", new Document("indexed",true))
 					);
 		}
 
@@ -89,55 +89,7 @@ public class MongoDBController {
 		return tweets.toArray(new Tweet[0]);
 	}
 
-	public Tweet[] getGraphUnindexedTweets(boolean setAsIndexed){
-		// obtener tweets
-		MongoCursor<Document> cursor = tweetsCollection.find(Filters.eq("userIndexed",false)).iterator();
-		List<Tweet> tweets = new ArrayList<>();
 
-		// si esta activa la opcion de actualizar la flag
-		if (setAsIndexed){
-			tweetsCollection.updateMany(
-					Filters.eq("userIndexed",false),
-					new Document("$set", new Document("userIndexed",true))
-			);
-		}
-
-		// Guardar como arreglo de tweets
-		try {
-			while (cursor.hasNext()) {
-				tweets.add(Tweet.fromDocument(cursor.next()));
-			}
-		} finally {
-			cursor.close();
-		}
-
-		return tweets.toArray(new Tweet[0]);
-	}
-
-	public Tweet[] getGeoUnindexedTweets(boolean setAsIndexed){
-		// obtener tweets
-		MongoCursor<Document> cursor = tweetsCollection.find(Filters.eq("geoIndexed",false)).iterator();
-		List<Tweet> tweets = new ArrayList<>();
-
-		// si esta activa la opcion de actualizar la flag
-		if (setAsIndexed){
-			tweetsCollection.updateMany(
-					Filters.eq("geoIndexed",false),
-					new Document("$set", new Document("geoIndexed",true))
-			);
-		}
-
-		// Guardar como arreglo de tweets
-		try {
-			while (cursor.hasNext()) {
-				tweets.add(Tweet.fromDocument(cursor.next()));
-			}
-		} finally {
-			cursor.close();
-		}
-
-		return tweets.toArray(new Tweet[0]);
-	}
 
 
 }

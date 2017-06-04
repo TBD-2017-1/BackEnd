@@ -5,6 +5,7 @@ import PoliTweetsCL.Core.Model.Tweet;
 import PoliTweetsCL.Core.Resources.Config;
 import PoliTweetsCL.Core.Utils.JSONizer;
 import PoliTweetsCL.Lucene.TextAPI;
+import PoliTweetsCL.Neo4J.GraphAPI;
 import facade.*;
 import model.*;
 
@@ -38,6 +39,8 @@ public class CronEJB {
     @EJB
     private TextAPI textAPI;
     @EJB
+    private GraphAPI graphAPI;
+    @EJB
     private Config config;
 
     private Date now;
@@ -49,22 +52,49 @@ public class CronEJB {
     public void init() {
         // connect to mongo
         mongo = new MongoDBController(config.getPropertiesObj());
-        textAPI.nuevoIndice();
+        textAPI.nuevoIndiceTweets();
+        textAPI.nuevoIndiceMenciones();
+
+        poblarGrafo();
     }
 
+
+
     public void createIndex(){
-        logger.info("Creando indice");
-        textAPI.nuevoIndice();
+        logger.info("Creando indice invertido");
+        textAPI.nuevoIndiceTweets();
     }
 
     public void doIndex(){
         logger.info("Doing CRON: Indexando");
         try {
             // obtener tweets no indexados
-            Tweet[] tweets = mongo.getTextUnindexedTweets(true);
+            Tweet[] tweets = mongo.getUnindexedTweets(true);
 
             // indexar en lucene
             textAPI.addTweets(tweets);
+
+            List<String[]> menciones;
+            for (Tweet tweet:tweets) {
+                // si es RT
+                if(tweet.getRetweetedStatus()!=null){
+                    graphAPI.addRetweet(
+                            tweet.getUser().getScreenName(),
+                            tweet.getRetweetedStatus().getUser().getScreenName(),
+                            tweet.getSentimiento());
+                }
+
+                menciones = textAPI.getMenciones(tweet);
+                if(menciones!=null) {
+                    for (String[] mencion : menciones) {
+                        // mencion: [0]:tipo, [1]:nombre, [2]:cuenta (can be null)
+                        graphAPI.addMencion(
+                                tweet.getUser().getScreenName(),
+                                mencion[1],
+                                tweet.getSentimiento());
+                    }
+                }
+            }
 
         }catch (Exception ex){
             ex.printStackTrace();
@@ -88,8 +118,9 @@ public class CronEJB {
             ex.printStackTrace();
         }
 
-        logger.info("Doing CRON: Nuevo indice");
-        textAPI.nuevoIndice();
+        logger.info("Doing CRON: Nuevos indices");
+        textAPI.nuevoIndiceTweets();
+        poblarGrafo();
     }
 
     private void doMetricasPoliticos() throws Exception {
@@ -300,6 +331,38 @@ public class CronEJB {
             conglomeradoMetricaEJB.create(registro);
         }
 
+    }
+
+    private void poblarGrafo(){
+        logger.info("CRON: Poblando Neo4J");
+        graphAPI.cleanDatabase();
+
+        // Conglomerados
+        List<Conglomerado> conglomerados = conglomeradoEJB.findAll();
+        for (Conglomerado congl:conglomerados) {
+            graphAPI.createEntidadPolitica(
+                    "Conglomerado",
+                    congl.getNombre(),
+                    congl.getCuentaTwitter());
+        }
+
+        // Partidos
+        List<Partido> partidos = partidoEJB.findAll();
+        for (Partido partido:partidos) {
+            graphAPI.createEntidadPolitica(
+                    "Partido",
+                    partido.getNombre(),
+                    partido.getCuentaTwitter());
+        }
+
+        // Politicos
+        List<Politico> politicos = politicoEJB.findAll();
+        for (Politico politico:politicos) {
+            graphAPI.createEntidadPolitica(
+                    "Politico",
+                    politico.getNombre(),
+                    politico.getCuentaTwitter());
+        }
     }
 
 }

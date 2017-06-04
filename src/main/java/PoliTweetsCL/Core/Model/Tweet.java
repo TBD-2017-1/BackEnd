@@ -27,10 +27,7 @@ public class Tweet{
 
     // Politweets
     private float sentimiento = 0;
-    private boolean textIndexed = false;
-    private boolean userIndexed = false;
-    private boolean geoIndexed = false;
-
+    private boolean indexed = false;
     public Tweet(Status s){
         _id = s.getId();
         createdAt = s.getCreatedAt();
@@ -100,15 +97,11 @@ public class Tweet{
     public GeoLocation getGeoLocation() {return geoLocation;}
     public Tweet getRetweetedStatus() {return retweetedStatus;}
     public float getSentimiento() {return sentimiento;}
-    public boolean isGeoIndexed() {return geoIndexed;}
-    public boolean isTextIndexed() {return textIndexed;}
-    public boolean isUserIndexed() {return userIndexed;}
+    public boolean isIndexed() {return indexed;}
 
     // SETTERS
     public void setSentimiento(float sentimiento) {this.sentimiento = sentimiento;}
-    public void setTextIndexed(boolean textIndexed) {this.textIndexed = textIndexed;}
-    public void setUserIndexed(boolean userIndexed) {this.userIndexed = userIndexed;}
-    public void setGeoIndexed(boolean geoIndexed) {this.geoIndexed = geoIndexed;}
+    public void setIndexed(boolean indexed) {this.indexed = indexed;}
 
 
 }

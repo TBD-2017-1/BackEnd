@@ -1,5 +1,6 @@
 package service;
 
+import PoliTweetsCL.Lucene.TextAPI;
 import facade.KeywordFacade;
 import java.util.List;
 import java.util.logging.Logger;
@@ -27,6 +28,8 @@ public class PartidoService {
     PartidoFacade partidoFacadeEJB;
     @EJB
     KeywordFacade keywordFacadeEJB;
+    @EJB
+    TextAPI textAPI;
 	
     Logger logger = Logger.getLogger(PartidoService.class.getName());
 	
@@ -77,6 +80,8 @@ public class PartidoService {
         //Merge a BD
         partidoFacadeEJB.edit(partido);
         keywordFacadeEJB.edit(keyword);
+
+        textAPI.nuevoIndiceMenciones();
     }
 
     @PUT
@@ -115,5 +120,7 @@ public class PartidoService {
         }else{
             keywordFacadeEJB.edit(keyword);   
         }
+
+        textAPI.nuevoIndiceMenciones();
     }
 }

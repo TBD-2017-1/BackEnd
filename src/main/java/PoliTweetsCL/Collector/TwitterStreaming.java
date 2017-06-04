@@ -7,7 +7,6 @@ import twitter4j.*;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
-import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -21,6 +20,8 @@ public class TwitterStreaming {
 	private Set<String> keywords;
 	private boolean isActive;
 	private boolean initialized = false;
+
+	java.util.logging.Logger logger = java.util.logging.Logger.getLogger(getClass().getName());
 
 	@PostConstruct
 	public void init() {
