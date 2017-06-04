@@ -107,6 +107,8 @@ public class CronEJB {
                 }
             }
 
+            mongo.deleteIndexed();
+
         }catch (Exception ex){
             ex.printStackTrace();
         }

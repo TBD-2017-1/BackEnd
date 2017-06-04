@@ -90,6 +90,9 @@ public class MongoDBController {
 	}
 
 
+	public void deleteIndexed(){
+		tweetsCollection.deleteMany(Filters.eq("indexed",true));
+	}
 
 
 }
