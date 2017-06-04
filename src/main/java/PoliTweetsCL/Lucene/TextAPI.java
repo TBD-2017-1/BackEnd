@@ -174,7 +174,7 @@ public class TextAPI {
 
                 // agregar datos al documento
                 doc.add(new TextField("texto", texto, Field.Store.NO));
-                doc.add(new StoredField("nombre", politico.getNombre()));
+                doc.add(new StoredField("nombre", politico.getNombre()+" "+politico.getApellido()));
                 if(politico.getCuentaTwitter()!=null)
                     doc.add(new StoredField("cuenta", "@"+politico.getCuentaTwitter()));
                 doc.add(new StoredField("tipo", "Politico"));

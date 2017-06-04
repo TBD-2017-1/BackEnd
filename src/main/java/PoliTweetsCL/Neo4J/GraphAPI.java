@@ -26,6 +26,8 @@ public class GraphAPI {
     private Driver driver;
     private Session session;
 
+    private Logger logger = Logger.getLogger(getClass().getName());
+
     @PostConstruct
     public void openConnection(){
       this.driver = GraphDatabase.driver( "bolt://localhost:7687", AuthTokens.basic( config.get("neo4j.user"), config.get("neo4j.pass") ) );
@@ -159,7 +161,7 @@ public class GraphAPI {
         if(!existUsuario(cuentaUsuario))
             createUsuario(cuentaUsuario);
         if(!existUsuario(cuentaOrigen))
-            createUsuario(cuentaOrigen);;
+            return;
 
         StatementResult result;
 
@@ -176,7 +178,7 @@ public class GraphAPI {
 
         int retweet = record.get("r").get("retweet").asInt();
         int menciones = record.get("r").get("menciones").asInt();
-        float sentAcumulado = record.get("r").get("sentimiento").asFloat();
+        double sentAcumulado = record.get("r").get("sentimiento").asFloat();
 
         int interacciones = menciones + retweet;
         retweet++;
@@ -214,7 +216,7 @@ public class GraphAPI {
 
         int retweet = record.get("r").get("retweet").asInt();
         int menciones = record.get("r").get("menciones").asInt();
-        float sentAcumulado = record.get("r").get("sentimiento").asFloat();
+        double sentAcumulado = record.get("r").get("sentimiento").asFloat();
 
         int interacciones = menciones + retweet;
         menciones++;
