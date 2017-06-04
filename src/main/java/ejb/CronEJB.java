@@ -215,7 +215,12 @@ public class CronEJB {
             int positiveCount = textAPI.getPositiveCount();
             int negativeCount = textAPI.getNegativeCount();
             int neutralCount = textAPI.getNeutralCount();
-            float aprobacion = 50 + 50 * (positiveCount-negativeCount)/(float)hits; // 50% base + (%pos - %neg)/2
+            float aprobacion;
+            if(hits != 0){
+                aprobacion = 50 + 50 * (positiveCount-negativeCount)/(float)hits; // 50% base + (%pos - %neg)/2
+            }else{
+                aprobacion = 50;
+            }
 
             //Guardar metrica en BD
             Metrica metrica;
@@ -279,7 +284,12 @@ public class CronEJB {
             int positiveCount = textAPI.getPositiveCount();
             int negativeCount = textAPI.getNegativeCount();
             int neutralCount = textAPI.getNeutralCount();
-            float aprobacion = 50 + 50 * (positiveCount-negativeCount)/(float)hits; // 50% base + (%pos - %neg)/2
+            float aprobacion;
+            if(hits != 0){
+                aprobacion = 50 + 50 * (positiveCount-negativeCount)/(float)hits; // 50% base + (%pos - %neg)/2
+            }else{
+                aprobacion = 50;
+            }
 
             //Guardar metrica en BD
             Metrica metrica;
