@@ -1,6 +1,7 @@
 package ejb;
 
 import PoliTweetsCL.Core.BD.MongoDBController;
+import PoliTweetsCL.Core.BD.MySQLController;
 import PoliTweetsCL.Core.Model.Tweet;
 import PoliTweetsCL.Core.Resources.Config;
 import PoliTweetsCL.Core.Utils.JSONizer;
@@ -50,6 +51,7 @@ public class CronEJB {
     private EntityManager em;
 
     private MongoDBController mongo;
+    private MySQLController mysql;
     private Date now;
     private String formattedNow;
 
@@ -157,15 +159,9 @@ public class CronEJB {
             int idpolitico = politico.getId();
             int idmetrica = metrica.getId();
             String lugar = "Desconocido";
-            Query query = em.createQuery(
-                    "INSERT INTO politico_metrica (idpolitico, idmetrica, valor, lugar, fecha) "
-                  + "VALUES (:idpolitico, :idmetrica, :valor, ':lugar', ':fecha')");
-            query.setParameter("idpolitico", idpolitico);
-            query.setParameter("idmetrica", idmetrica);
-            query.setParameter("valor", aprobacion);
-            query.setParameter("lugar", lugar);
-            query.setParameter("fecha", this.formattedNow);
-            query.executeUpdate();
+            String query = "INSERT INTO politico_metrica (idpolitico, idmetrica, valor, lugar, fecha) "
+                            + "VALUES ("+idpolitico+", "+idmetrica+", "+aprobacion+", '"+lugar+"', '"+this.formattedNow+"')";
+            mysql.execQuery(query);
             /*PoliticoMetrica registro = new PoliticoMetrica();
             Metrica metrica = metricaEJB.findByName("aprobacion");
             registro.setMetrica_politico(metrica);

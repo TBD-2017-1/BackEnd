@@ -93,5 +93,14 @@ public class MySQLController {
 
         return null;
     }
+    
+    public void execQuery(String query){
+        try{
+            Statement st = conn.createStatement();
+            st.executeQuery(query);
+        }catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+    }
 
 }
