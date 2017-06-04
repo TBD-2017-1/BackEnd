@@ -184,7 +184,7 @@ public class GraphAPI {
 
         this.session.run(
                 "match (:Usuario {cuenta:'" + cuentaUsuario + "'})-[r:Tweet]->(:Usuario {cuenta:'" + cuentaOrigen + "'}) " +
-                        "set r.retweet=" + retweet + ", r.sentiminento=" + sentAcumulado);
+                        "set r.retweet=" + retweet + ", r.sentimiento=" + sentAcumulado);
         closeSession(sessionFlag);
     }
 
@@ -222,7 +222,7 @@ public class GraphAPI {
 
         this.session.run(
                 "match (:Usuario {cuenta:'"+cuentaUsuario+"'})-[r:Tweet]->(:Entidad {nombre:'"+nombreEntidad+"'}) " +
-                        "set r.menciones="+menciones+", r.sentiminento="+sentAcumulado);
+                        "set r.menciones="+menciones+", r.sentimiento="+sentAcumulado);
 
         closeSession(sessionFlag);
     }
