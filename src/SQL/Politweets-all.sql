@@ -148,7 +148,7 @@ CREATE TABLE `keyword` (
 
 LOCK TABLES `keyword` WRITE;
 /*!40000 ALTER TABLE `keyword` DISABLE KEYS */;
-INSERT INTO `keyword` VALUES (27,'@BancadaPCIC'),(14,'@bancadaPSchile'),(40,'@consejocultura'),(8,'@DiputadosDC'),(4,'@DiputadosRN'),(2,'@DiputadosUDI'),(16,'@Diputados_PC'),(39,'@MindepChile'),(34,'@MinDeSalud'),(37,'@MinisterioBBNN'),(35,'@MinMineriaCL'),(32,'@MintrabChile'),(29,'@min_interior'),(38,'@MMAChile'),(33,'@mop_chile'),(36,'@mtt_chile'),(11,'@ppddiputados'),(30,'@PrensaMINDEF'),(31,'@segegob'),(7,'@SenadoresDC'),(13,'@SenadoresPS'),(3,'@SenadoresRN'),(1,'@SenadoresUDI'),(9,'DC'),(23,'Evopoli'),(26,'IC'),(25,'MAS'),(24,'MAS Región'),(28,'ME-O'),(22,'MIR'),(41,'PAIS'),(17,'PC'),(12,'PPD'),(10,'PRI'),(19,'PRO'),(18,'PRSD'),(15,'PS'),(21,'RD'),(20,'rev. democratica'),(6,'RN'),(5,'UDI');
+INSERT INTO `keyword` VALUES (27,'@BancadaPCIC'),(14,'@bancadaPSchile'),(40,'@consejocultura'),(8,'@DiputadosDC'),(4,'@DiputadosRN'),(2,'@DiputadosUDI'),(16,'@Diputados_PC'),(39,'@MindepChile'),(34,'@MinDeSalud'),(37,'@MinisterioBBNN'),(35,'@MinMineriaCL'),(32,'@MintrabChile'),(29,'@min_interior'),(38,'@MMAChile'),(33,'@mop_chile'),(36,'@mtt_chile'),(11,'@ppddiputados'),(30,'@PrensaMINDEF'),(31,'@segegob'),(7,'@SenadoresDC'),(13,'@SenadoresPS'),(3,'@SenadoresRN'),(1,'@SenadoresUDI'),(9,'DC'),(23,'Evopoli'),(26,'IC'),(24,'MASRegión'),(28,'ME-O'),(22,'MIR'),(17,'PC'),(12,'PPD'),(10,'PRI'),(19,'PRO'),(18,'PRSD'),(15,'PS'),(21,'RD'),(20,'rev. democratica'),(6,'RN'),(5,'UDI');
 /*!40000 ALTER TABLE `keyword` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -229,7 +229,7 @@ CREATE TABLE `partido_keyword` (
 
 LOCK TABLES `partido_keyword` WRITE;
 /*!40000 ALTER TABLE `partido_keyword` DISABLE KEYS */;
-INSERT INTO `partido_keyword` VALUES (1,1),(2,1),(3,2),(4,2),(5,1),(6,2),(7,3),(8,3),(9,3),(10,4),(11,5),(12,5),(13,6),(14,6),(15,6),(16,7),(17,7),(18,8),(19,9),(20,12),(21,12),(22,15),(23,17),(24,18),(25,18),(26,19),(27,19),(41,21);
+INSERT INTO `partido_keyword` VALUES (1,1),(2,1),(3,2),(4,2),(5,1),(6,2),(7,3),(8,3),(9,3),(10,4),(11,5),(12,5),(13,6),(14,6),(15,6),(16,7),(17,7),(18,8),(19,9),(20,12),(21,12),(22,15),(23,17),(24,18),(26,19),(27,19);
 /*!40000 ALTER TABLE `partido_keyword` ENABLE KEYS */;
 UNLOCK TABLES;
 
