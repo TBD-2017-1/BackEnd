@@ -97,7 +97,8 @@ public class MySQLController {
     public void execQuery(String query){
         try{
             Statement st = conn.createStatement();
-            st.executeQuery(query);
+            st.executeUpdate(query);
+	    st.close();
         }catch(Exception ex){
             System.out.println(ex.getMessage());
         }

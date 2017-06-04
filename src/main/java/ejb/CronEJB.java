@@ -61,6 +61,8 @@ public class CronEJB {
     public void init() {
         // connect to mongo
         mongo = new MongoDBController(config.getPropertiesObj());
+	// connect to MySQL - for INSERT queries
+	mysql = new MySQLController(config.getPropertiesObj());
         textAPI.nuevoIndice();
     }
 
