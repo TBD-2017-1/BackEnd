@@ -46,9 +46,6 @@ public class CronEJB {
     private TextAPI textAPI;
     @EJB
     private Config config;
-    
-    @PersistenceContext(unitName = "politweetsPU")
-    private EntityManager em;
 
     private MongoDBController mongo;
     private MySQLController mysql;
@@ -156,45 +153,43 @@ public class CronEJB {
                     aprobacion
             ));
 
-            // guardar metrica en BD
-            Metrica metrica = metricaEJB.findByName("aprobacion");
+            //Guardar metrica en BD
+            Metrica metrica;
             int idpolitico = politico.getId();
-            int idmetrica = metrica.getId();
+            int idmetrica;
             String lugar = "Desconocido";
-            String query = "INSERT INTO politico_metrica (idpolitico, idmetrica, valor, lugar, fecha) "
-                            + "VALUES ("+idpolitico+", "+idmetrica+", "+aprobacion+", '"+lugar+"', '"+this.formattedNow+"')";
+            String query;
+            
+            //Aprobacion
+            metrica = metricaEJB.findByName("aprobacion");
+            idmetrica = metrica.getId();
+            query = "INSERT INTO politico_metrica (idpolitico, idmetrica, valor, lugar, fecha) "
+                    + "VALUES ("+idpolitico+", "+idmetrica+", "+aprobacion+", '"+lugar+"', '"+this.formattedNow+"')";
             mysql.execQuery(query);
-            /*PoliticoMetrica registro = new PoliticoMetrica();
-            Metrica metrica = metricaEJB.findByName("aprobacion");
-            registro.setMetrica_politico(metrica);
-            registro.setPolitico_metrica(politico);
-            registro.setLugar("Desconocido");
-            registro.setValor(aprobacion);
-
-            logger.info(JSONizer.toPrettyJSON(registro));
-
-            politicoMetricaEJB.create(registro);
-
-            registro = new PoliticoMetrica();
-            registro.setMetrica_politico(metricaEJB.findByName("sentimientoPositivo"));
-            registro.setPolitico_metrica(politico);
-            registro.setLugar("Desconocido");
-            registro.setValor(positiveCount/(float)hits);
-            politicoMetricaEJB.create(registro);
-
-            registro = new PoliticoMetrica();
-            registro.setMetrica_politico(metricaEJB.findByName("sentimientoNegativo"));
-            registro.setPolitico_metrica(politico);
-            registro.setLugar("Desconocido");
-            registro.setValor(negativeCount/(float)hits);
-            politicoMetricaEJB.create(registro);
-
-            registro = new PoliticoMetrica();
-            registro.setMetrica_politico(metricaEJB.findByName("sentimientoNeutro"));
-            registro.setPolitico_metrica(politico);
-            registro.setLugar("Desconocido");
-            registro.setValor(neutralCount/(float)hits);
-            politicoMetricaEJB.create(registro);*/
+            
+            //Sentimiento Positivo
+            metrica = metricaEJB.findByName("sentimientoPositivo");
+            idmetrica = metrica.getId();
+            query = "INSERT INTO politico_metrica (idpolitico, idmetrica, valor, lugar, fecha) "
+                    + "VALUES ("+idpolitico+", "+idmetrica+", "+(float)positiveCount+", '"+lugar+"', '"+this.formattedNow+"')";
+            mysql.execQuery(query);
+            
+            //Sentimiento Negativo
+            metrica = metricaEJB.findByName("sentimientoNegativo");
+            idmetrica = metrica.getId();
+            query = "INSERT INTO politico_metrica (idpolitico, idmetrica, valor, lugar, fecha) "
+                    + "VALUES ("+idpolitico+", "+idmetrica+", "+(float)negativeCount+", '"+lugar+"', '"+this.formattedNow+"')";
+            mysql.execQuery(query);
+            
+            //Sentimient Neutro
+            metrica = metricaEJB.findByName("sentimientoNeutro");
+            idmetrica = metrica.getId();
+            query = "INSERT INTO politico_metrica (idpolitico, idmetrica, valor, lugar, fecha) "
+                    + "VALUES ("+idpolitico+", "+idmetrica+", "+(float)neutralCount+", '"+lugar+"', '"+this.formattedNow+"')";
+            mysql.execQuery(query);
+            
+            //Antes de calculaba: 
+            //      sentimiento(Positivo|Negativo|Neutral) = (positive|negative|neutral)Count/(float)hits;
         }
     }
 
@@ -222,37 +217,43 @@ public class CronEJB {
             int neutralCount = textAPI.getNeutralCount();
             float aprobacion = 50 + 50 * (positiveCount-negativeCount)/(float)hits; // 50% base + (%pos - %neg)/2
 
-            // guardar metrica en BD
-
-            // guardar metrica en BD
-
-            PartidoMetrica registro = new PartidoMetrica();
-            registro.setMetrica_partido(metricaEJB.findByName("aprobacion"));
-            registro.setPartido_metrica(partido);
-            registro.setLugar("Desconocido");
-            registro.setValor(aprobacion);
-            partidoMetricaEJB.create(registro);
-
-            registro = new PartidoMetrica();
-            registro.setMetrica_partido(metricaEJB.findByName("sentimientoPositivo"));
-            registro.setPartido_metrica(partido);
-            registro.setLugar("Desconocido");
-            registro.setValor(positiveCount/(float)hits);
-            partidoMetricaEJB.create(registro);
-
-            registro = new PartidoMetrica();
-            registro.setMetrica_partido(metricaEJB.findByName("sentimientoNegativo"));
-            registro.setPartido_metrica(partido);
-            registro.setLugar("Desconocido");
-            registro.setValor(negativeCount/(float)hits);
-            partidoMetricaEJB.create(registro);
-
-            registro = new PartidoMetrica();
-            registro.setMetrica_partido(metricaEJB.findByName("sentimientoNeutro"));
-            registro.setPartido_metrica(partido);
-            registro.setLugar("Desconocido");
-            registro.setValor(neutralCount/(float)hits);
-            partidoMetricaEJB.create(registro);
+            //Guardar metrica en BD
+            Metrica metrica;
+            int idpartido = partido.getId();
+            int idmetrica;
+            String lugar = "Desconocido";
+            String query;
+            
+            //Aprobacion
+            metrica = metricaEJB.findByName("aprobacion");
+            idmetrica = metrica.getId();
+            query = "INSERT INTO partido_metrica (idpartido, idmetrica, valor, lugar, fecha) "
+                    + "VALUES ("+idpartido+", "+idmetrica+", "+aprobacion+", '"+lugar+"', '"+this.formattedNow+"')";
+            mysql.execQuery(query);
+            
+            //Sentimiento Positivo
+            metrica = metricaEJB.findByName("sentimientoPositivo");
+            idmetrica = metrica.getId();
+            query = "INSERT INTO partido_metrica (idpartido, idmetrica, valor, lugar, fecha) "
+                    + "VALUES ("+idpartido+", "+idmetrica+", "+(float)positiveCount+", '"+lugar+"', '"+this.formattedNow+"')";
+            mysql.execQuery(query);
+            
+            //Sentimiento Negativo
+            metrica = metricaEJB.findByName("sentimientoNegativo");
+            idmetrica = metrica.getId();
+            query = "INSERT INTO partido_metrica (idpartido, idmetrica, valor, lugar, fecha) "
+                    + "VALUES ("+idpartido+", "+idmetrica+", "+(float)negativeCount+", '"+lugar+"', '"+this.formattedNow+"')";
+            mysql.execQuery(query);
+            
+            //Sentimient Neutro
+            metrica = metricaEJB.findByName("sentimientoNeutro");
+            idmetrica = metrica.getId();
+            query = "INSERT INTO partido_metrica (idpartido, idmetrica, valor, lugar, fecha) "
+                    + "VALUES ("+idpartido+", "+idmetrica+", "+(float)neutralCount+", '"+lugar+"', '"+this.formattedNow+"')";
+            mysql.execQuery(query);
+            
+            //Antes de calculaba: 
+            //      sentimiento(Positivo|Negativo|Neutral) = (positive|negative|neutral)Count/(float)hits;
 
         }
     }
@@ -280,35 +281,43 @@ public class CronEJB {
             int neutralCount = textAPI.getNeutralCount();
             float aprobacion = 50 + 50 * (positiveCount-negativeCount)/(float)hits; // 50% base + (%pos - %neg)/2
 
-            // guardar metrica en BD
-
-            ConglomeradoMetrica registro = new ConglomeradoMetrica();
-            registro.setMetrica(metricaEJB.findByName("aprobacion"));
-            registro.setConglomerado(congl);
-            registro.setLugar("Desconocido");
-            registro.setValor(aprobacion);
-            conglomeradoMetricaEJB.create(registro);
-
-            registro = new ConglomeradoMetrica();
-            registro.setMetrica(metricaEJB.findByName("sentimientoPositivo"));
-            registro.setConglomerado(congl);
-            registro.setLugar("Desconocido");
-            registro.setValor(positiveCount/(float)hits);
-            conglomeradoMetricaEJB.create(registro);
-
-            registro = new ConglomeradoMetrica();
-            registro.setMetrica(metricaEJB.findByName("sentimientoNegativo"));
-            registro.setConglomerado(congl);
-            registro.setLugar("Desconocido");
-            registro.setValor(negativeCount/(float)hits);
-            conglomeradoMetricaEJB.create(registro);
-
-            registro = new ConglomeradoMetrica();
-            registro.setMetrica(metricaEJB.findByName("sentimientoNeutro"));
-            registro.setConglomerado(congl);
-            registro.setLugar("Desconocido");
-            registro.setValor(neutralCount/(float)hits);
-            conglomeradoMetricaEJB.create(registro);
+            //Guardar metrica en BD
+            Metrica metrica;
+            int idconglomerado = congl.getId();
+            int idmetrica;
+            String lugar = "Desconocido";
+            String query;
+            
+            //Aprobacion
+            metrica = metricaEJB.findByName("aprobacion");
+            idmetrica = metrica.getId();
+            query = "INSERT INTO conglomerado_metrica (idconglomerado, idmetrica, valor, lugar, fecha) "
+                    + "VALUES ("+idconglomerado+", "+idmetrica+", "+aprobacion+", '"+lugar+"', '"+this.formattedNow+"')";
+            mysql.execQuery(query);
+            
+            //Sentimiento Positivo
+            metrica = metricaEJB.findByName("sentimientoPositivo");
+            idmetrica = metrica.getId();
+            query = "INSERT INTO conglomerado_metrica (idconglomerado, idmetrica, valor, lugar, fecha) "
+                    + "VALUES ("+idconglomerado+", "+idmetrica+", "+(float)positiveCount+", '"+lugar+"', '"+this.formattedNow+"')";
+            mysql.execQuery(query);
+            
+            //Sentimiento Negativo
+            metrica = metricaEJB.findByName("sentimientoNegativo");
+            idmetrica = metrica.getId();
+            query = "INSERT INTO conglomerado_metrica (idconglomerado, idmetrica, valor, lugar, fecha) "
+                    + "VALUES ("+idconglomerado+", "+idmetrica+", "+(float)negativeCount+", '"+lugar+"', '"+this.formattedNow+"')";
+            mysql.execQuery(query);
+            
+            //Sentimient Neutro
+            metrica = metricaEJB.findByName("sentimientoNeutro");
+            idmetrica = metrica.getId();
+            query = "INSERT INTO conglomerado_metrica (idconglomerado, idmetrica, valor, lugar, fecha) "
+                    + "VALUES ("+idconglomerado+", "+idmetrica+", "+(float)neutralCount+", '"+lugar+"', '"+this.formattedNow+"')";
+            mysql.execQuery(query);
+            
+            //Antes de calculaba: 
+            //      sentimiento(Positivo|Negativo|Neutral) = (positive|negative|neutral)Count/(float)hits;
         }
 
     }
