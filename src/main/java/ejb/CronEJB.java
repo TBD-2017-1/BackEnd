@@ -375,7 +375,7 @@ public class CronEJB {
         for (Politico politico:politicos) {
             graphAPI.createEntidadPolitica(
                     "Politico",
-                    politico.getNombre(),
+                    politico.getNombre()+" "+politico.getApellido(),
                     politico.getCuentaTwitter());
         }
     }

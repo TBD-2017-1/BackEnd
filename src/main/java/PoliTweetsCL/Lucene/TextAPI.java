@@ -167,7 +167,7 @@ public class TextAPI {
 
                 // obtener keywords
                 List<Keyword> keywords = politico.getKeywords();
-                String texto = politico.getNombre()+" @"+politico.getCuentaTwitter();
+                String texto = politico.getApellido()+" @"+politico.getCuentaTwitter();
                 for (Keyword keyword: keywords) {
                     texto += " "+keyword.getValue();
                 }
@@ -306,11 +306,11 @@ public class TextAPI {
             bq.add(query, BooleanClause.Occur.SHOULD);
             bq.setMinimumNumberShouldMatch(1);
 
-            // buscar TODAS las coincidencias
+            // buscar 3 mejores coincidencias
             TotalHitCountCollector collector = new TotalHitCountCollector();
             searcher.search(bq,collector);
             this.hitCount = collector.getTotalHits();
-            TopDocs results = searcher.search(bq,Math.max(1, this.hitCount));
+            TopDocs results = searcher.search(bq,3);
 
             // Guardar los hits
             ScoreDoc[] hits = results.scoreDocs;
