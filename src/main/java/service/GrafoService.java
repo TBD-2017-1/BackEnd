@@ -1,7 +1,6 @@
 package service;
 
 import PoliTweetsCL.Neo4J.GraphAPI;
-import ejb.GraphEJB;
 
 import javax.ejb.EJB;
 import javax.json.Json;
@@ -19,27 +18,18 @@ public class GrafoService {
     GraphAPI graphEJB;
 
     @GET
-    @Path("conglomerados")
+    @Path("{entidad}")
     @Produces({"application/xml", "application/json"})
-    public StatementResult getInfluenciaConglomerados(){
-        StatementResult grafo = graphEJB.getMasInfluyentes("conglomerado", 100);
-        return grafo;
-    }
-    
-    @GET
-    @Path("partidos")
-    @Produces({"application/xml", "application/json"})
-    public StatementResult getInfluenciaPartidos(){
-        StatementResult grafo = graphEJB.getMasInfluyentes("partido", 100);
-        return grafo;
-    }
-    
-    @GET
-    @Path("politicos")
-    @Produces({"application/xml", "application/json"})
-    public StatementResult getInfluenciaPoliticos(){
-        StatementResult grafo = graphEJB.getMasInfluyentes("politico", 100);
+    public StatementResult getInfluencia(@PathParam("entidad") String entidad){
+        StatementResult grafo = graphEJB.getMasInfluyentes(entidad, 100);
         return grafo;
     }
 
+    @GET
+    @Path("{entidad}/{minRel}")
+    @Produces({"application/xml", "application/json"})
+    public StatementResult getInfluencia(@PathParam("entidad") String entidad, @PathParam("limite") Integer minRel){
+        StatementResult grafo = graphEJB.getMasInfluyentes(entidad, minRel);
+        return grafo;
+    }
 }

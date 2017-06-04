@@ -312,13 +312,12 @@ public class GraphAPI {
     }
     
     //Metodos para consultas
-    public StatementResult getMasInfluyentes(String type, int limit){
+    public StatementResult getMasInfluyentes(String type, int minRel){
         boolean sessionFlag = openSession();
         StatementResult result;
-        result = this.session.run("match (a:"+type+")<-[r]-() "
-                                + "with count(r) as c, a "
-                                + "order by count(r) desc limit "+limit+""
-                                + "match (a)<-[r]-(b) return a, b, r");
+        result = this.session.run("match (b)-[r]->(a:"+type+") "
+                                + "where size(()-[:Tweet]->(a)) > "+minRel+" "
+                                + "return a, b, r");
         closeSession(sessionFlag);
         return result;
     }
