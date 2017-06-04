@@ -6,6 +6,7 @@ import PoliTweetsCL.Core.Resources.Config;
 import PoliTweetsCL.Core.Utils.JSONizer;
 import PoliTweetsCL.Lucene.TextAPI;
 import facade.*;
+import java.text.SimpleDateFormat;
 import model.*;
 
 import javax.annotation.PostConstruct;
@@ -19,6 +20,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.LocalBean;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 @Singleton
 @LocalBean
@@ -41,8 +45,13 @@ public class CronEJB {
     private TextAPI textAPI;
     @EJB
     private Config config;
+    
+    @PersistenceContext(unitName = "politweetsPU")
+    private EntityManager em;
 
     private MongoDBController mongo;
+    private Date now;
+    private String formattedNow;
 
     Logger logger = Logger.getLogger(getClass().getName());
 
@@ -74,7 +83,9 @@ public class CronEJB {
 
     public void doMetricas(){
         // Guardar el tiempo de la metrica
-        //now = new Date();
+        this.now = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        this.formattedNow = formatter.format(now);
         //now = Date.from(Instant.now().truncatedTo(ChronoUnit.HOURS));
 
         doIndex();
@@ -83,8 +94,8 @@ public class CronEJB {
 
         try {
             doMetricasPoliticos();
-            doMetricasPartidos();
-            doMetricasConglomerados();
+            //doMetricasPartidos();
+            //doMetricasConglomerados();
         }catch (Exception ex){
             logger.severe("Error al crear metrica: "+ Arrays.toString(ex.getStackTrace()));
             ex.printStackTrace();
@@ -142,8 +153,20 @@ public class CronEJB {
             ));
 
             // guardar metrica en BD
-
-            PoliticoMetrica registro = new PoliticoMetrica();
+            Metrica metrica = metricaEJB.findByName("aprobacion");
+            int idpolitico = politico.getId();
+            int idmetrica = metrica.getId();
+            String lugar = "Desconocido";
+            Query query = em.createQuery(
+                    "INSERT INTO politico_metrica (idpolitico, idmetrica, valor, lugar, fecha) "
+                  + "VALUES (:idpolitico, :idmetrica, :valor, ':lugar', ':fecha')");
+            query.setParameter("idpolitico", idpolitico);
+            query.setParameter("idmetrica", idmetrica);
+            query.setParameter("valor", aprobacion);
+            query.setParameter("lugar", lugar);
+            query.setParameter("fecha", this.formattedNow);
+            query.executeUpdate();
+            /*PoliticoMetrica registro = new PoliticoMetrica();
             Metrica metrica = metricaEJB.findByName("aprobacion");
             registro.setMetrica_politico(metrica);
             registro.setPolitico_metrica(politico);
@@ -173,7 +196,7 @@ public class CronEJB {
             registro.setPolitico_metrica(politico);
             registro.setLugar("Desconocido");
             registro.setValor(neutralCount/(float)hits);
-            politicoMetricaEJB.create(registro);
+            politicoMetricaEJB.create(registro);*/
         }
     }
 
