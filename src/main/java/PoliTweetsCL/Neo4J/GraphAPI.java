@@ -17,8 +17,10 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import java.util.Map;
 import java.util.logging.Logger;
+import javax.ejb.LocalBean;
 
 @Stateless
+@LocalBean
 public class GraphAPI {
     @EJB
     private Config config;
@@ -305,6 +307,18 @@ public class GraphAPI {
         }
         closeSession(sessionFlag);
         return false;
+    }
+    
+    //Metodos para consultas
+    public StatementResult getMasInfluyentes(String type, int limit){
+        boolean sessionFlag = openSession();
+        StatementResult result;
+        result = this.session.run("match (a:"+type+")<-[r]-() "
+                                + "with count(r) as c, a "
+                                + "order by count(r) desc limit "+limit+""
+                                + "match (a)<-[r]-(b) return a, b, r");
+        closeSession(sessionFlag);
+        return result;
     }
 
 }
