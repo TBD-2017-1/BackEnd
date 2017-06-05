@@ -82,19 +82,19 @@ public class PoliticoMetrica implements Serializable {
         this.lugar = lugar;
     }
 
-    public Politico getPolitico_metrica() {
+    public Politico getPolitico() {
         return politico_metrica;
     }
 
-    public void setPolitico_metrica(Politico politico_metrica) {
+    public void setPolitico(Politico politico_metrica) {
         this.politico_metrica = politico_metrica;
     }
 
-    public Metrica getMetrica_politico() {
+    public Metrica getMetrica() {
         return metrica_politico;
     }
 
-    public void setMetrica_politico(Metrica metrica_politico) {
+    public void setMetrica(Metrica metrica_politico) {
         this.metrica_politico = metrica_politico;
     }
     

@@ -82,19 +82,19 @@ public class PartidoMetrica implements Serializable {
         this.lugar = lugar;
     }
 
-    public Partido getPartido_metrica() {
+    public Partido getPartido() {
         return this.partido_metrica;
     }
     
-    public void setPartido_metrica(Partido partido_metrica){
+    public void setPartido(Partido partido_metrica){
         this.partido_metrica = partido_metrica;
     }
 
-    public Metrica getMetrica_partido() {
+    public Metrica getMetrica() {
         return metrica_partido;
     }
 
-    public void setMetrica_partido(Metrica metrica_partido) {
+    public void setMetrica(Metrica metrica_partido) {
         this.metrica_partido = metrica_partido;
     }
     
