@@ -17,14 +17,18 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import java.util.Map;
 import java.util.logging.Logger;
+import javax.ejb.LocalBean;
 
 @Stateless
+@LocalBean
 public class GraphAPI {
     @EJB
     private Config config;
 
     private Driver driver;
     private Session session;
+
+    private Logger logger = Logger.getLogger(getClass().getName());
 
     @PostConstruct
     public void openConnection(){
@@ -159,7 +163,7 @@ public class GraphAPI {
         if(!existUsuario(cuentaUsuario))
             createUsuario(cuentaUsuario);
         if(!existUsuario(cuentaOrigen))
-            createUsuario(cuentaOrigen);;
+            return;
 
         StatementResult result;
 
@@ -176,7 +180,7 @@ public class GraphAPI {
 
         int retweet = record.get("r").get("retweet").asInt();
         int menciones = record.get("r").get("menciones").asInt();
-        float sentAcumulado = record.get("r").get("sentimiento").asFloat();
+        double sentAcumulado = record.get("r").get("sentimiento").asFloat();
 
         int interacciones = menciones + retweet;
         retweet++;
@@ -184,7 +188,7 @@ public class GraphAPI {
 
         this.session.run(
                 "match (:Usuario {cuenta:'" + cuentaUsuario + "'})-[r:Tweet]->(:Usuario {cuenta:'" + cuentaOrigen + "'}) " +
-                        "set r.retweet=" + retweet + ", r.sentiminento=" + sentAcumulado);
+                        "set r.retweet=" + retweet + ", r.sentimiento=" + sentAcumulado);
         closeSession(sessionFlag);
     }
 
@@ -214,7 +218,7 @@ public class GraphAPI {
 
         int retweet = record.get("r").get("retweet").asInt();
         int menciones = record.get("r").get("menciones").asInt();
-        float sentAcumulado = record.get("r").get("sentimiento").asFloat();
+        double sentAcumulado = record.get("r").get("sentimiento").asFloat();
 
         int interacciones = menciones + retweet;
         menciones++;
@@ -222,7 +226,7 @@ public class GraphAPI {
 
         this.session.run(
                 "match (:Usuario {cuenta:'"+cuentaUsuario+"'})-[r:Tweet]->(:Entidad {nombre:'"+nombreEntidad+"'}) " +
-                        "set r.menciones="+menciones+", r.sentiminento="+sentAcumulado);
+                        "set r.menciones="+menciones+", r.sentimiento="+sentAcumulado);
 
         closeSession(sessionFlag);
     }
@@ -305,6 +309,16 @@ public class GraphAPI {
         }
         closeSession(sessionFlag);
         return false;
+    }
+    
+    //Metodos para consultas
+    public StatementResult getMasInfluyentes(String entidad, int limit){
+        boolean sessionFlag = openSession();
+        StatementResult result;
+        result = this.session.run("match (a:Entidad {nombre: "+entidad+"}) with a limit "+limit+""
+                                + "match (b)-[r]->(a) return a, b, r");
+        closeSession(sessionFlag);
+        return result;
     }
 
 }
