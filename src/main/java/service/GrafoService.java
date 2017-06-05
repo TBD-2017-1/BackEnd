@@ -21,15 +21,15 @@ public class GrafoService {
     @Path("{entidad}")
     @Produces({"application/xml", "application/json"})
     public StatementResult getInfluencia(@PathParam("entidad") String entidad){
-        StatementResult grafo = graphEJB.getMasInfluyentes(entidad, 100);
+        StatementResult grafo = graphEJB.getMasInfluyentes(entidad, 10);
         return grafo;
     }
 
     @GET
-    @Path("{entidad}/{minRel}")
+    @Path("{entidad}/{limit}")
     @Produces({"application/xml", "application/json"})
-    public StatementResult getInfluencia(@PathParam("entidad") String entidad, @PathParam("limite") Integer minRel){
-        StatementResult grafo = graphEJB.getMasInfluyentes(entidad, minRel);
+    public StatementResult getInfluencia(@PathParam("entidad") String entidad, @PathParam("limit") Integer limit){
+        StatementResult grafo = graphEJB.getMasInfluyentes(entidad, limit);
         return grafo;
     }
 }
