@@ -171,24 +171,26 @@ public class GraphAPI {
             createRelacion_Usuario_Usuario(cuentaUsuario,cuentaOrigen);
 
 
-        String query = "match (:Usuario {cuenta:'"+cuentaUsuario+"'})-[r:Tweet]->(:Usuario {cuenta:'"+cuentaOrigen+"'}) "+
+        String query = "match (:Usuario {cuenta:'"+cuentaUsuario+"'})-[r:Tweet]->(:Usuario:Entidad {cuenta:'"+cuentaOrigen+"'}) "+
                 "return r";
 
         result = this.session.run(query);
 
-        Record record = result.next();
+        if (result.hasNext()) {
+            Record record = result.next();
 
-        int retweet = record.get("r").get("retweet").asInt();
-        int menciones = record.get("r").get("menciones").asInt();
-        double sentAcumulado = record.get("r").get("sentimiento").asFloat();
+            int retweet = record.get("r").get("retweet").asInt();
+            int menciones = record.get("r").get("menciones").asInt();
+            double sentAcumulado = record.get("r").get("sentimiento").asFloat();
 
-        int interacciones = menciones + retweet;
-        retweet++;
-        sentAcumulado = sentimiento + sentAcumulado * interacciones / (interacciones + 1);
+            int interacciones = menciones + retweet;
+            retweet++;
+            sentAcumulado = (sentimiento + sentAcumulado * interacciones) / (interacciones + 1);
 
-        this.session.run(
-                "match (:Usuario {cuenta:'" + cuentaUsuario + "'})-[r:Tweet]->(:Usuario {cuenta:'" + cuentaOrigen + "'}) " +
-                        "set r.retweet=" + retweet + ", r.sentimiento=" + sentAcumulado);
+            this.session.run(
+                    "match (:Usuario {cuenta:'" + cuentaUsuario + "'})-[r:Tweet]->(:Usuario {cuenta:'" + cuentaOrigen + "'}) " +
+                            "set r.retweet=" + retweet + ", r.sentimiento=" + sentAcumulado);
+        }
         closeSession(sessionFlag);
     }
 
@@ -222,7 +224,7 @@ public class GraphAPI {
 
         int interacciones = menciones + retweet;
         menciones++;
-        sentAcumulado = sentimiento + sentAcumulado*interacciones/(interacciones+1);
+        sentAcumulado = (sentimiento + sentAcumulado*interacciones)/(interacciones+1);
 
         this.session.run(
                 "match (:Usuario {cuenta:'"+cuentaUsuario+"'})-[r:Tweet]->(:Entidad {nombre:'"+nombreEntidad+"'}) " +
