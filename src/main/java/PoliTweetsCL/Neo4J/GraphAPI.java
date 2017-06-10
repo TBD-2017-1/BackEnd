@@ -326,7 +326,8 @@ public class GraphAPI {
             Record record = result.next();
             records.add(gson.toJson(record.asMap()));
         }
-        closeSession(sessionFlag);  
+        closeSession(sessionFlag); 
+        logger.info(records.toString());
         return records;
     }
 
