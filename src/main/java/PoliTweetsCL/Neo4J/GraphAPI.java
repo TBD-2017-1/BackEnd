@@ -11,11 +11,14 @@ import org.neo4j.driver.v1.StatementResult;
 
 import PoliTweetsCL.Core.Model.Tweet;
 import PoliTweetsCL.Core.Model.User;
+import java.util.ArrayList;
+import java.util.List;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import java.util.Map;
 import java.util.logging.Logger;
 import javax.ejb.LocalBean;
 
@@ -314,13 +317,18 @@ public class GraphAPI {
     }
     
     //Metodos para consultas
-    public StatementResult getMasInfluyentes(String entidad, int limit){
+    public Gson getMasInfluyentes(String entidad, int limit){
         boolean sessionFlag = openSession();
         StatementResult result;
+        Gson gson = new GsonBuilder().create();
         result = this.session.run("match (a:"+entidad+") with a limit "+limit+" "
                                 + "match (b)-[r]->(a) return a, b, r");
-        closeSession(sessionFlag);
-        return result;
+        while(result.hasNext()){
+            Record record = result.next();
+            gson.toJson(record.asMap());
+        }
+        closeSession(sessionFlag);  
+        return gson;
     }
 
 }
