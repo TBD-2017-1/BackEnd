@@ -317,7 +317,7 @@ public class GraphAPI {
     public StatementResult getMasInfluyentes(String entidad, int limit){
         boolean sessionFlag = openSession();
         StatementResult result;
-        result = this.session.run("match (a:Entidad {nombre: "+entidad+"}) with a limit "+limit+""
+        result = this.session.run("match (a:"+entidad+") with a limit "+limit+""
                                 + "match (b)-[r]->(a) return a, b, r");
         closeSession(sessionFlag);
         return result;
