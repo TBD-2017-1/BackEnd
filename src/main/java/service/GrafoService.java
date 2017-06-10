@@ -1,13 +1,14 @@
 package service;
 
 import PoliTweetsCL.Neo4J.GraphAPI;
-import com.google.gson.Gson;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import twitter4j.JSONArray;
 
 @Path("/influencias")
 public class GrafoService {
@@ -17,16 +18,16 @@ public class GrafoService {
     @GET
     @Path("{entidad}")
     @Produces({"application/xml", "application/json"})
-    public Gson getInfluencia(@PathParam("entidad") String entidad){
-        Gson grafo = graphEJB.getMasInfluyentes(entidad, 10);
-        return grafo;
+    public JSONArray getInfluencia(@PathParam("entidad") String entidad){
+        List<String> grafo = graphEJB.getMasInfluyentes(entidad, 10);
+        return new JSONArray(grafo);
     }
 
     @GET
     @Path("{entidad}/{limit}")
     @Produces({"application/xml", "application/json"})
-    public Gson getInfluencia(@PathParam("entidad") String entidad, @PathParam("limit") Integer limit){
-        Gson grafo = graphEJB.getMasInfluyentes(entidad, limit);
-        return grafo;
+    public JSONArray getInfluencia(@PathParam("entidad") String entidad, @PathParam("limit") Integer limit){
+        List<String> grafo = graphEJB.getMasInfluyentes(entidad, 10);
+        return new JSONArray(grafo);
     }
 }
