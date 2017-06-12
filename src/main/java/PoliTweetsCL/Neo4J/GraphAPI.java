@@ -321,7 +321,7 @@ public class GraphAPI {
         StatementResult result;
         List<String> records = new ArrayList<>();
         Gson gson = new GsonBuilder().create();
-        result = this.session.run("match (a:"+entidad+") with a limit "+limit+" "
+        result = this.session.run("match (a:"+entidad+") with a, size(()-[:Tweet]->(a)) as count order by count desc limit "+limit+" "
                                 + "match (b)-[r]->(a) return a, b, r");
         while(result.hasNext()){
             Record record = result.next();
