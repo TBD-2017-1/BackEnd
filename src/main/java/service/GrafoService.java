@@ -28,8 +28,9 @@ public class GrafoService {
     @GET
     @Path("{entidad}/{limit}")
     @Produces({"application/xml", "application/json"})
-    public StatementResult getInfluencia(@PathParam("entidad") String entidad, @PathParam("limit") Integer limit){
+    public Response getInfluencia(@PathParam("entidad") String entidad, @PathParam("limit") Integer limit){
         StatementResult grafo = graphEJB.getMasInfluyentes(entidad, limit);
-        return grafo;
+        return Response.status(Response.Status.OK).entity(grafo).build();
     }
+
 }
