@@ -332,4 +332,21 @@ public class GraphAPI {
         return records;
     }
 
+    public List<String> getRanking(String entidad, int limit){
+        boolean sessionFlag = openSession();
+        StatementResult result;
+        List<String> records = new ArrayList<>();
+        Gson gson = new GsonBuilder().create();
+        result = this.session.run("match (a:"+entidad+") with a, size(()-[:Tweet]->(a)) as count order by count desc limit "+limit+" return a, count");
+        while(result.hasNext()){
+            Record record = result.next();
+            records.add(gson.toJson(record.asMap()));
+        }
+        closeSession(sessionFlag);
+        logger.info(records.toString());
+        return records;
+    }
+
+
+
 }

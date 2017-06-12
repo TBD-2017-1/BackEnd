@@ -34,4 +34,21 @@ public class GrafoService {
         List<String> grafo = graphEJB.getMasInfluyentes(entidad, limit);
         return Response.status(Response.Status.OK).entity(grafo.toString()).type(MediaType.APPLICATION_JSON).build();
     }
+
+    @GET
+    @Path("ranking/{entidad}")
+    @Produces({"application/xml", "application/json"})
+    public Response getRanking(@PathParam("entidad") String entidad){
+        List<String> grafo = graphEJB.getRanking(entidad, 10);
+        return Response.status(Response.Status.OK).entity(grafo.toString()).type(MediaType.APPLICATION_JSON).build();
+    }
+
+    @GET
+    @Path("ranking/{entidad}/{limit}")
+    @Produces({"application/xml", "application/json"})
+    public Response getRanking(@PathParam("entidad") String entidad, @PathParam("limit") Integer limit){
+        List<String> grafo = graphEJB.getRanking(entidad, limit);
+        return Response.status(Response.Status.OK).entity(grafo.toString()).type(MediaType.APPLICATION_JSON).build();
+    }
+
 }
