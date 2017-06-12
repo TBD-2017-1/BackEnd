@@ -22,3 +22,5 @@ libs/backend.war
 
 #app.propierties
 src/main/resources/app.properties
+
+*.orig

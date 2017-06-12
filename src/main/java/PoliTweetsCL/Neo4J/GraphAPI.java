@@ -1,7 +1,8 @@
 package PoliTweetsCL.Neo4J;
 
 import PoliTweetsCL.Core.Resources.Config;
-import PoliTweetsCL.Core.Utils.JSONizer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.neo4j.driver.v1.AuthTokens;
 import org.neo4j.driver.v1.Driver;
 import org.neo4j.driver.v1.GraphDatabase;
@@ -9,8 +10,9 @@ import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.StatementResult;
 
-import PoliTweetsCL.Core.Model.Tweet;
-import PoliTweetsCL.Core.Model.User;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -314,15 +316,20 @@ public class GraphAPI {
     }
     
     //Metodos para consultas
-    public StatementResult getMasInfluyentes(String entidad, int limit){
+    public List<String> getMasInfluyentes(String entidad, int limit){
         boolean sessionFlag = openSession();
         StatementResult result;
-        //result = this.session.run("match (a:Entidad {nombre: "+entidad+"}) with a limit "+limit+""
-        //                        + "match (b)-[r]->(a) return a, b, r");
-        result = this.session.run("match (a:Partido) with a limit 5 " +
-                "match (b)-[r]->(a) return a, b, r");
-        closeSession(sessionFlag);
-        return result;
+        List<String> records = new ArrayList<>();
+        Gson gson = new GsonBuilder().create();
+        result = this.session.run("match (a:"+entidad+") with a limit "+limit+" "
+                                + "match (b)-[r]->(a) return a, b, r");
+        while(result.hasNext()){
+            Record record = result.next();
+            records.add(gson.toJson(record.asMap()));
+        }
+        closeSession(sessionFlag); 
+        logger.info(records.toString());
+        return records;
     }
 
 }
