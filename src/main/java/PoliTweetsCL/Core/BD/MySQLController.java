@@ -2,11 +2,15 @@ package PoliTweetsCL.Core.BD;
 
 import PoliTweetsCL.Core.Resources.Config;
 import PoliTweetsCL.Core.Resources.Resources;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Stateless;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -94,7 +98,7 @@ public class MySQLController {
         return null;
     }
     
-    public void execQuery(String query){
+    public void execUpdate(String query){
         try{
             Statement st = conn.createStatement();
             st.executeUpdate(query);
@@ -102,6 +106,81 @@ public class MySQLController {
         }catch(Exception ex){
             System.out.println(ex.getMessage());
         }
+    }
+
+
+    public ResultSet execQuery(String query){
+        try{
+            Statement st = conn.createStatement();
+            ResultSet result = st.executeQuery(query);
+            st.close();
+            return result;
+
+        }catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+
+        return null;
+    }
+
+    public String getRankingMetricaPolitico(String metrica, String fecha){
+        try {
+            String query = "SELECT CONCAT(p.nombre, ' ', p.apellido) AS nombre, m.valor AS valor\n" +
+                    "FROM ( SELECT id FROM metrica WHERE nombre = '" + metrica + "') a\n" +
+                    "    JOIN politico_metrica m ON a.id = m.idmetrica\n" +
+                    "    JOIN politico p ON m.idpolitico = p.id\n" +
+                    "WHERE m.fecha = '" + fecha + "' ORDER BY valor DESC LIMIT 10";
+
+            Statement st = conn.createStatement();
+            ResultSet result = st.executeQuery(query);
+
+            // get results
+            JSONArray array = new JSONArray();
+            JSONObject row;
+            while (result.next()) {
+                row = new JSONObject();
+                row.put("nombre", result.getString("nombre"));
+                row.put("valor", result.getDouble("valor"));
+                array.add(row);
+            }
+
+            st.close();
+
+            return "{\"ranking\":"+array.toJSONString()+"}";
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getRankingMetricaEntidad(String entidad,String metrica, String fecha){
+        try {
+            String query = "SELECT p.nombre AS nombre, m.valor AS valor\n" +
+                    "FROM ( SELECT id FROM metrica WHERE nombre = '" + metrica + "') a\n" +
+                    "    JOIN "+entidad+"_metrica m ON a.id = m.idmetrica\n" +
+                    "    JOIN "+entidad+" p ON m.id"+entidad+" = p.id\n" +
+                    "WHERE m.fecha = '" + fecha + "' ORDER BY valor DESC LIMIT 10";
+
+            Statement st = conn.createStatement();
+            ResultSet result = st.executeQuery(query);
+
+            // get results
+            JSONArray array = new JSONArray();
+            JSONObject row;
+            while (result.next()) {
+                row = new JSONObject();
+                row.put("nombre", result.getString("nombre"));
+                row.put("valor", result.getDouble("valor"));
+                array.add(row);
+            }
+
+            st.close();
+
+            return "{\"ranking\":"+array.toJSONString()+"}";
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return null;
     }
 
 }

@@ -4,7 +4,6 @@ import PoliTweetsCL.Core.BD.MongoDBController;
 import PoliTweetsCL.Core.BD.MySQLController;
 import PoliTweetsCL.Core.Model.Tweet;
 import PoliTweetsCL.Core.Resources.Config;
-import PoliTweetsCL.Core.Utils.JSONizer;
 import PoliTweetsCL.Lucene.TextAPI;
 import PoliTweetsCL.Neo4J.GraphAPI;
 import facade.*;
@@ -14,17 +13,12 @@ import model.*;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.LocalBean;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 @Singleton
 @LocalBean
@@ -183,28 +177,28 @@ public class CronEJB {
             idmetrica = metrica.getId();
             query = "INSERT INTO politico_metrica (idpolitico, idmetrica, valor, lugar, fecha) "
                     + "VALUES ("+idpolitico+", "+idmetrica+", "+aprobacion+", '"+lugar+"', '"+this.formattedNow+"')";
-            mysql.execQuery(query);
+            mysql.execUpdate(query);
             
             //Sentimiento Positivo
             metrica = metricaEJB.findByName("sentimientoPositivo");
             idmetrica = metrica.getId();
             query = "INSERT INTO politico_metrica (idpolitico, idmetrica, valor, lugar, fecha) "
                     + "VALUES ("+idpolitico+", "+idmetrica+", "+(float)positiveCount+", '"+lugar+"', '"+this.formattedNow+"')";
-            mysql.execQuery(query);
+            mysql.execUpdate(query);
             
             //Sentimiento Negativo
             metrica = metricaEJB.findByName("sentimientoNegativo");
             idmetrica = metrica.getId();
             query = "INSERT INTO politico_metrica (idpolitico, idmetrica, valor, lugar, fecha) "
                     + "VALUES ("+idpolitico+", "+idmetrica+", "+(float)negativeCount+", '"+lugar+"', '"+this.formattedNow+"')";
-            mysql.execQuery(query);
+            mysql.execUpdate(query);
             
             //Sentimient Neutro
             metrica = metricaEJB.findByName("sentimientoNeutro");
             idmetrica = metrica.getId();
             query = "INSERT INTO politico_metrica (idpolitico, idmetrica, valor, lugar, fecha) "
                     + "VALUES ("+idpolitico+", "+idmetrica+", "+(float)neutralCount+", '"+lugar+"', '"+this.formattedNow+"')";
-            mysql.execQuery(query);
+            mysql.execUpdate(query);
             
             //Antes de calculaba: 
             //      sentimiento(Positivo|Negativo|Neutral) = (positive|negative|neutral)Count/(float)hits;
@@ -252,28 +246,28 @@ public class CronEJB {
             idmetrica = metrica.getId();
             query = "INSERT INTO partido_metrica (idpartido, idmetrica, valor, lugar, fecha) "
                     + "VALUES ("+idpartido+", "+idmetrica+", "+aprobacion+", '"+lugar+"', '"+this.formattedNow+"')";
-            mysql.execQuery(query);
+            mysql.execUpdate(query);
             
             //Sentimiento Positivo
             metrica = metricaEJB.findByName("sentimientoPositivo");
             idmetrica = metrica.getId();
             query = "INSERT INTO partido_metrica (idpartido, idmetrica, valor, lugar, fecha) "
                     + "VALUES ("+idpartido+", "+idmetrica+", "+(float)positiveCount+", '"+lugar+"', '"+this.formattedNow+"')";
-            mysql.execQuery(query);
+            mysql.execUpdate(query);
             
             //Sentimiento Negativo
             metrica = metricaEJB.findByName("sentimientoNegativo");
             idmetrica = metrica.getId();
             query = "INSERT INTO partido_metrica (idpartido, idmetrica, valor, lugar, fecha) "
                     + "VALUES ("+idpartido+", "+idmetrica+", "+(float)negativeCount+", '"+lugar+"', '"+this.formattedNow+"')";
-            mysql.execQuery(query);
+            mysql.execUpdate(query);
             
             //Sentimient Neutro
             metrica = metricaEJB.findByName("sentimientoNeutro");
             idmetrica = metrica.getId();
             query = "INSERT INTO partido_metrica (idpartido, idmetrica, valor, lugar, fecha) "
                     + "VALUES ("+idpartido+", "+idmetrica+", "+(float)neutralCount+", '"+lugar+"', '"+this.formattedNow+"')";
-            mysql.execQuery(query);
+            mysql.execUpdate(query);
             
             //Antes de calculaba: 
             //      sentimiento(Positivo|Negativo|Neutral) = (positive|negative|neutral)Count/(float)hits;
@@ -321,28 +315,28 @@ public class CronEJB {
             idmetrica = metrica.getId();
             query = "INSERT INTO conglomerado_metrica (idconglomerado, idmetrica, valor, lugar, fecha) "
                     + "VALUES ("+idconglomerado+", "+idmetrica+", "+aprobacion+", '"+lugar+"', '"+this.formattedNow+"')";
-            mysql.execQuery(query);
+            mysql.execUpdate(query);
             
             //Sentimiento Positivo
             metrica = metricaEJB.findByName("sentimientoPositivo");
             idmetrica = metrica.getId();
             query = "INSERT INTO conglomerado_metrica (idconglomerado, idmetrica, valor, lugar, fecha) "
                     + "VALUES ("+idconglomerado+", "+idmetrica+", "+(float)positiveCount+", '"+lugar+"', '"+this.formattedNow+"')";
-            mysql.execQuery(query);
+            mysql.execUpdate(query);
             
             //Sentimiento Negativo
             metrica = metricaEJB.findByName("sentimientoNegativo");
             idmetrica = metrica.getId();
             query = "INSERT INTO conglomerado_metrica (idconglomerado, idmetrica, valor, lugar, fecha) "
                     + "VALUES ("+idconglomerado+", "+idmetrica+", "+(float)negativeCount+", '"+lugar+"', '"+this.formattedNow+"')";
-            mysql.execQuery(query);
+            mysql.execUpdate(query);
             
             //Sentimient Neutro
             metrica = metricaEJB.findByName("sentimientoNeutro");
             idmetrica = metrica.getId();
             query = "INSERT INTO conglomerado_metrica (idconglomerado, idmetrica, valor, lugar, fecha) "
                     + "VALUES ("+idconglomerado+", "+idmetrica+", "+(float)neutralCount+", '"+lugar+"', '"+this.formattedNow+"')";
-            mysql.execQuery(query);
+            mysql.execUpdate(query);
             
             //Antes de calculaba: 
             //      sentimiento(Positivo|Negativo|Neutral) = (positive|negative|neutral)Count/(float)hits;

@@ -1,10 +1,15 @@
 package service;
 
+import PoliTweetsCL.Core.BD.MySQLController;
+import PoliTweetsCL.Core.Resources.Config;
 import ejb.PoliticoMetricaFacadeEJB;
 import facade.ConglomeradoFacade;
 import facade.ConglomeradoMetricaFacade;
 
+import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -31,10 +36,13 @@ import model.Partido;
 import model.PartidoMetrica;
 import model.PoliticoMetrica;
 import model.Politico;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 @Path("/metricas")
 public class MetricaService {
-	
+	@EJB
+    Config config;
     @EJB 
     MetricaFacade metricaFacadeEJB;
     //EJB Conglomerados
@@ -52,6 +60,7 @@ public class MetricaService {
     PoliticoMetricaFacade metricaPoliticoEJB;
     @EJB
     PoliticoFacade politicoEJB;
+
 	
     Logger logger = Logger.getLogger(MetricaService.class.getName());
 	
@@ -151,12 +160,50 @@ public class MetricaService {
         return newListPM;
     }
 
-    /*@GET
+    @GET
     @Path("{metrica}/ranking/politicos")
     @Produces({"application/xml", "application/json"})
-    public PoliticoMetrica getRankMetricaPoliticos(@PathParam("metrica") String nombreMetrica) {
-        return metricaFacadeEJB.findByName(nombreMetrica).getLastPoliticoMetrica();
-    }*/
+    public String getRankMetricaPoliticos(@PathParam("metrica") String nombreMetrica) {
+        Date now = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedNow = formatter.format(now);
+
+        MySQLController mysql = new MySQLController(config.getPropertiesObj());
+
+        String response = mysql.getRankingMetricaPolitico("aprobacion",formattedNow);
+
+        return response;
+    }
+
+    @GET
+    @Path("{metrica}/ranking/partidos")
+    @Produces({"application/xml", "application/json"})
+    public String getRankMetricaPartidos(@PathParam("metrica") String nombreMetrica) {
+        Date now = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedNow = formatter.format(now);
+
+        MySQLController mysql = new MySQLController(config.getPropertiesObj());
+
+        String response = mysql.getRankingMetricaEntidad("partido","aprobacion",formattedNow);
+
+        return response;
+    }
+
+    @GET
+    @Path("{metrica}/ranking/conglomerados")
+    @Produces({"application/xml", "application/json"})
+    public String getRankMetricaConglomerados(@PathParam("metrica") String nombreMetrica) {
+        Date now = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedNow = formatter.format(now);
+
+        MySQLController mysql = new MySQLController(config.getPropertiesObj());
+
+        String response = mysql.getRankingMetricaEntidad("conglomerado","aprobacion",formattedNow);
+
+        return response;
+    }
 
 
 	
