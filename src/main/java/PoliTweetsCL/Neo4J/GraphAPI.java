@@ -222,7 +222,7 @@ public class GraphAPI {
 
         int retweet = record.get("r").get("retweet").asInt();
         int menciones = record.get("r").get("menciones").asInt();
-        double sentAcumulado = record.get("r").get("sentimiento").asFloat();
+        double sentAcumulado = record.get("r").get("sentimiento").asDouble();
 
         int interacciones = menciones + retweet;
         menciones++;
