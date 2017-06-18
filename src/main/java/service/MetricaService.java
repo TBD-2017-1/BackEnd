@@ -3,6 +3,8 @@ package service;
 import ejb.PoliticoMetricaFacadeEJB;
 import facade.ConglomeradoFacade;
 import facade.ConglomeradoMetricaFacade;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -86,12 +88,12 @@ public class MetricaService {
                 newListCM.add(cm);                                                                                                                                                                                                                              
             }
         }
-        
+
         if(newListCM.size() > 7){
-            return newListCM.subList(0, 6);
-        }else{
-            return newListCM;
+            newListCM =  newListCM.subList(0, 6);
         }
+        Collections.reverse(newListCM);
+        return newListCM;
     }
     
     @GET
@@ -114,12 +116,12 @@ public class MetricaService {
                 newListPM.add(pm);
             }
         }
-        
+
         if(newListPM.size() > 7){
-            return newListPM.subList(0, 6);
-        }else{
-            return newListPM;
+            newListPM =  newListPM.subList(0, 6);
         }
+        Collections.reverse(newListPM);
+        return newListPM;
     }
     
     @GET
@@ -143,10 +145,10 @@ public class MetricaService {
             }
         }
         if(newListPM.size() > 7){
-            return newListPM.subList(0, 6);
-        }else{
-            return newListPM;
+            newListPM =  newListPM.subList(0, 6);
         }
+        Collections.reverse(newListPM);
+        return newListPM;
     }
 
     /*@GET
