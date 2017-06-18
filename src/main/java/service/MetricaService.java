@@ -148,6 +148,15 @@ public class MetricaService {
             return newListPM;
         }
     }
+
+    /*@GET
+    @Path("{metrica}/ranking/politicos")
+    @Produces({"application/xml", "application/json"})
+    public PoliticoMetrica getRankMetricaPoliticos(@PathParam("metrica") String nombreMetrica) {
+        return metricaFacadeEJB.findByName(nombreMetrica).getLastPoliticoMetrica();
+    }*/
+
+
 	
     @POST
     @Path("testCreate")

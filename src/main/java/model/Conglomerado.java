@@ -36,6 +36,7 @@ public class Conglomerado implements Serializable {
     private List<Politico> listaPoliticos;
     
     @OneToMany(mappedBy="conglomerado_metrica")
+    @OrderBy("fecha DESC")
     private List<ConglomeradoMetrica> conglomeradoMetrica;
 
     @ManyToMany(mappedBy="conglomerados_keywords", cascade={CascadeType.ALL}, fetch=FetchType.EAGER)

@@ -42,6 +42,7 @@ public class Politico implements Serializable {
     private Partido partido_politico;
     
     @OneToMany(mappedBy="politico_metrica")
+    @OrderBy("fecha DESC")
     private List<PoliticoMetrica> politicoMetrica;
 
     @ManyToMany(mappedBy="politicos_keywords", cascade={CascadeType.ALL}, fetch=FetchType.EAGER)

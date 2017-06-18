@@ -121,6 +121,8 @@ public class CronEJB {
         this.formattedNow = formatter.format(now);
         //now = Date.from(Instant.now().truncatedTo(ChronoUnit.HOURS));
 
+        logger.info("Formatted NOW: "+this.formattedNow);
+
         doIndex();
 
         logger.info("Doing CRON: Metricas");

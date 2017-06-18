@@ -30,5 +30,4 @@ public class CronService {
         cron.doMetricas();
         return Response.status(Response.Status.OK).build();
     }
-
 }

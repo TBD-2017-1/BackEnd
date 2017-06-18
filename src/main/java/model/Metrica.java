@@ -27,15 +27,15 @@ public class Metrica implements Serializable {
     
     //Relations
     @OneToMany(mappedBy="metrica_conglomerado")
-    @OrderBy("fecha ASC")
+    @OrderBy("fecha DESC")
     private List<ConglomeradoMetrica> conglomeradoMetrica;
     
     @OneToMany(mappedBy="metrica_partido")
-    @OrderBy("fecha ASC")
+    @OrderBy("fecha DESC")
     private List<PartidoMetrica> partidoMetrica;
     
     @OneToMany(mappedBy="metrica_politico")
-    @OrderBy("fecha ASC")
+    @OrderBy("fecha DESC")
     private List<PoliticoMetrica> politicoMetrica;
     
     //Methods
@@ -69,7 +69,5 @@ public class Metrica implements Serializable {
     public List<PoliticoMetrica> getPoliticoMetrica() {
         return politicoMetrica;
     }
-    
-    
     
 }
