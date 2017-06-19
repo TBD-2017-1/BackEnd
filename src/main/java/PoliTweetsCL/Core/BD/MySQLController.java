@@ -97,12 +97,31 @@ public class MySQLController {
 
         return null;
     }
+
+    public void dropMetricas(){
+        try {
+            Statement st = conn.createStatement();
+            String sql = "DELETE FROM politico_metrica";
+            st.executeUpdate(sql);
+            st.close();
+            st = conn.createStatement();
+            sql = "DELETE FROM partido_metrica";
+            st.executeUpdate(sql);
+            st.close();
+            st = conn.createStatement();
+            sql = "DELETE FROM conglomerado_metrica";
+            st.executeUpdate(sql);
+            st.close();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
     
     public void execUpdate(String query){
         try{
             Statement st = conn.createStatement();
             st.executeUpdate(query);
-	    st.close();
+	        st.close();
         }catch(Exception ex){
             System.out.println(ex.getMessage());
         }

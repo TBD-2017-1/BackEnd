@@ -2,6 +2,7 @@ package service;
 
 import PoliTweetsCL.Core.BD.MySQLController;
 import PoliTweetsCL.Core.Resources.Config;
+import ejb.CronEJB;
 import ejb.PoliticoMetricaFacadeEJB;
 import facade.ConglomeradoFacade;
 import facade.ConglomeradoMetricaFacade;
@@ -60,6 +61,8 @@ public class MetricaService {
     PoliticoMetricaFacade metricaPoliticoEJB;
     @EJB
     PoliticoFacade politicoEJB;
+    @EJB
+    CronEJB cron;
 
 	
     Logger logger = Logger.getLogger(MetricaService.class.getName());
@@ -211,16 +214,9 @@ public class MetricaService {
     @Path("testCreate")
     //@Consumes({"application/xml", "application/json"})
     public void testCreate() {
-        float valor = 50;
-        Metrica m = metricaFacadeEJB.findByName("Aprobacion");
-        List<Politico> p = politicoEJB.findAll();
-        PoliticoMetrica pm = new PoliticoMetrica();
-        pm.setLugar("Aca");
-        pm.setValor(valor);
-        pm.setMetrica(m);
-        pm.setPolitico(p.get(2));
-        logger.info(p.get(2).getKeywords().get(0).getValue());
-        metricaPoliticoEJB.create(pm);
+        MySQLController mysql = new MySQLController(config.getPropertiesObj());
+        mysql.dropMetricas();
+        cron.createTestMetricas();
     }
     
     @POST
