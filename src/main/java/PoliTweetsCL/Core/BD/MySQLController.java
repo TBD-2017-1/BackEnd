@@ -142,7 +142,7 @@ public class MySQLController {
         return null;
     }
 
-    public String getRankingMetricaPolitico(String metrica, String fecha){
+    public JSONObject getRankingMetricaPolitico(String metrica, String fecha){
         try {
             String query = "SELECT CONCAT(p.nombre, ' ', p.apellido) AS nombre, m.valor AS valor\n" +
                     "FROM ( SELECT id FROM metrica WHERE nombre = '" + metrica + "') a\n" +
@@ -165,14 +165,17 @@ public class MySQLController {
 
             st.close();
 
-            return "{\"ranking\":"+array.toJSONString()+"}";
+            row = new JSONObject();
+            row.put("ranking",array);
+
+            return row;
         }catch (Exception ex){
             ex.printStackTrace();
         }
         return null;
     }
 
-    public String getRankingMetricaEntidad(String entidad,String metrica, String fecha){
+    public JSONObject getRankingMetricaEntidad(String entidad,String metrica, String fecha){
         try {
             String query = "SELECT p.nombre AS nombre, m.valor AS valor\n" +
                     "FROM ( SELECT id FROM metrica WHERE nombre = '" + metrica + "') a\n" +
@@ -195,7 +198,10 @@ public class MySQLController {
 
             st.close();
 
-            return "{\"ranking\":"+array.toJSONString()+"}";
+            row = new JSONObject();
+            row.put("ranking",array);
+
+            return row;
         }catch (Exception ex){
             ex.printStackTrace();
         }

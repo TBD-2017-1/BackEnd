@@ -175,9 +175,9 @@ public class MetricaService {
 
         MySQLController mysql = new MySQLController(config.getPropertiesObj());
 
-        String response = mysql.getRankingMetricaPolitico("aprobacion",formattedNow);
+        JSONObject response = mysql.getRankingMetricaPolitico("aprobacion",formattedNow);
 
-        return Response.status(Response.Status.OK).entity(response).type(MediaType.APPLICATION_JSON).build();
+        return Response.status(Response.Status.OK).entity(response.toJSONString()).type(MediaType.APPLICATION_JSON).build();
     }
 
     @GET
@@ -190,7 +190,7 @@ public class MetricaService {
 
         MySQLController mysql = new MySQLController(config.getPropertiesObj());
 
-        String response = mysql.getRankingMetricaEntidad("partido","aprobacion",formattedNow);
+        JSONObject response = mysql.getRankingMetricaEntidad("partido","aprobacion",formattedNow);
 
         return Response.status(Response.Status.OK).entity(response).type(MediaType.APPLICATION_JSON).build();
     }
@@ -205,7 +205,7 @@ public class MetricaService {
 
         MySQLController mysql = new MySQLController(config.getPropertiesObj());
 
-        String response = mysql.getRankingMetricaEntidad("conglomerado","aprobacion",formattedNow);
+        JSONObject response = mysql.getRankingMetricaEntidad("conglomerado","aprobacion",formattedNow);
 
         return Response.status(Response.Status.OK).entity(response).type(MediaType.APPLICATION_JSON).build();
     }
