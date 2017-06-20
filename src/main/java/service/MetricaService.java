@@ -30,6 +30,8 @@ import facade.PartidoMetricaFacade;
 import facade.PoliticoFacade;
 import facade.PoliticoMetricaFacade;
 import java.util.ArrayList;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import model.Conglomerado;
 import model.ConglomeradoMetrica;
 import model.Metrica;
@@ -166,7 +168,7 @@ public class MetricaService {
     @GET
     @Path("{metrica}/ranking/politicos")
     @Produces({"application/xml", "application/json"})
-    public String getRankMetricaPoliticos(@PathParam("metrica") String nombreMetrica) {
+    public Response getRankMetricaPoliticos(@PathParam("metrica") String nombreMetrica) {
         Date now = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String formattedNow = formatter.format(now);
@@ -175,13 +177,13 @@ public class MetricaService {
 
         String response = mysql.getRankingMetricaPolitico("aprobacion",formattedNow);
 
-        return response;
+        return Response.status(Response.Status.OK).entity(response).type(MediaType.APPLICATION_JSON).build();
     }
 
     @GET
     @Path("{metrica}/ranking/partidos")
     @Produces({"application/xml", "application/json"})
-    public String getRankMetricaPartidos(@PathParam("metrica") String nombreMetrica) {
+    public Response getRankMetricaPartidos(@PathParam("metrica") String nombreMetrica) {
         Date now = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String formattedNow = formatter.format(now);
@@ -190,13 +192,13 @@ public class MetricaService {
 
         String response = mysql.getRankingMetricaEntidad("partido","aprobacion",formattedNow);
 
-        return response;
+        return Response.status(Response.Status.OK).entity(response).type(MediaType.APPLICATION_JSON).build();
     }
 
     @GET
     @Path("{metrica}/ranking/conglomerados")
     @Produces({"application/xml", "application/json"})
-    public String getRankMetricaConglomerados(@PathParam("metrica") String nombreMetrica) {
+    public Response getRankMetricaConglomerados(@PathParam("metrica") String nombreMetrica) {
         Date now = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String formattedNow = formatter.format(now);
@@ -205,7 +207,7 @@ public class MetricaService {
 
         String response = mysql.getRankingMetricaEntidad("conglomerado","aprobacion",formattedNow);
 
-        return response;
+        return Response.status(Response.Status.OK).entity(response).type(MediaType.APPLICATION_JSON).build();
     }
 
 
