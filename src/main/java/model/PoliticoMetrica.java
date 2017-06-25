@@ -28,9 +28,6 @@ public class PoliticoMetrica implements Serializable {
     @Temporal(TemporalType.DATE)
     @Column(name="fecha")
     private Date fecha;
-    
-    @Column(name="lugar", length=50)
-    private String lugar;
 
     //Relations
     @ManyToOne(fetch=FetchType.LAZY)
@@ -40,6 +37,10 @@ public class PoliticoMetrica implements Serializable {
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="idmetrica", referencedColumnName="id")
     private Metrica metrica_politico;
+
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="idregion", referencedColumnName="id")
+    private Region region;
     
     //Methods
     public PoliticoMetrica() {
@@ -72,14 +73,6 @@ public class PoliticoMetrica implements Serializable {
 
     public void setFecha(Date fecha) {
         this.fecha = fecha;
-    }
-
-    public String getLugar() {
-        return lugar;
-    }
-
-    public void setLugar(String lugar) {
-        this.lugar = lugar;
     }
 
     public Politico getPolitico() {

@@ -44,6 +44,99 @@ INSERT INTO `admin` VALUES (1,'admin','admin');
 UNLOCK TABLES;
 
 --
+-- Table structure for table `region`
+--
+
+DROP TABLE IF EXISTS `region`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `region` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `codigo` VARCHAR(5) NOT NULL,
+  `nombre` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `nombre` (`nombre`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `region`
+--
+
+LOCK TABLES `region` WRITE;
+/*!40000 ALTER TABLE `region` DISABLE KEYS */;
+INSERT INTO `region` VALUES (1,'I','Tarapacá'),(2,'II','Antofagasta'),(3,'III','Atacama'),(4,'IV','Coquimbo'),(5,'V','Valparaíso'),(6,'VI','O\'Higgins'),(7,'VII','Maule'),(8,'VIII','Biobío'),(9,'IX','Araucanía'),(10,'X','Los Lagos'),(11,'XI','Aysén'),(12,'XII','Magallanes'),(13,'RM','Metropolitana de Santiago'),(14,'XIV','Los Ríos'),(15,'XV','Arica y Parinacota');
+/*!40000 ALTER TABLE `region` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `keyword`
+--
+
+DROP TABLE IF EXISTS `keyword`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `keyword` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `value` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `value` (`value`)
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `keyword`
+--
+
+LOCK TABLES `keyword` WRITE;
+/*!40000 ALTER TABLE `keyword` DISABLE KEYS */;
+INSERT INTO `keyword` VALUES (27,'@BancadaPCIC'),(14,'@bancadaPSchile'),(40,'@consejocultura'),(8,'@DiputadosDC'),(4,'@DiputadosRN'),(2,'@DiputadosUDI'),(16,'@Diputados_PC'),(39,'@MindepChile'),(34,'@MinDeSalud'),(37,'@MinisterioBBNN'),(35,'@MinMineriaCL'),(32,'@MintrabChile'),(29,'@min_interior'),(38,'@MMAChile'),(33,'@mop_chile'),(36,'@mtt_chile'),(11,'@ppddiputados'),(30,'@PrensaMINDEF'),(31,'@segegob'),(7,'@SenadoresDC'),(13,'@SenadoresPS'),(3,'@SenadoresRN'),(1,'@SenadoresUDI'),(9,'DC'),(23,'Evopoli'),(26,'IC'),(24,'MASRegión'),(28,'ME-O'),(22,'MIR'),(17,'PC'),(12,'PPD'),(10,'PRI'),(19,'PRO'),(18,'PRSD'),(15,'PS'),(21,'RD'),(20,'rev. democratica'),(6,'RN'),(5,'UDI');
+/*!40000 ALTER TABLE `keyword` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `region_keyword`
+--
+
+DROP TABLE IF EXISTS `region_keyword`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `region_keyword` (
+  `idkeyword` int(11) NOT NULL,
+  `idregion` int(11) NOT NULL,
+  PRIMARY KEY (`idregion`,`idkeyword`),
+  KEY `idkeyword` (`idkeyword`),
+  KEY `idregion` (`idregion`),
+  CONSTRAINT `region_keyword_ibfk_1` FOREIGN KEY (`idregion`) REFERENCES `partido` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `region_keyword_ibfk_2` FOREIGN KEY (`idkeyword`) REFERENCES `keyword` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `metrica`
+--
+
+DROP TABLE IF EXISTS `metrica`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `metrica` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `metrica`
+--
+
+LOCK TABLES `metrica` WRITE;
+/*!40000 ALTER TABLE `metrica` DISABLE KEYS */;
+INSERT INTO `metrica` VALUES (1,'aprobacion'),(2,'sentimientoPositivo'),(3,'sentimientoNegativo'),(4,'sentimientoNeutro');
+/*!40000 ALTER TABLE `metrica` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `conglomerado`
 --
 
@@ -108,14 +201,16 @@ CREATE TABLE `conglomerado_metrica` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `idconglomerado` int(11) NOT NULL,
   `idmetrica` int(11) NOT NULL,
+  `idregion` int(11) NOT NULL,
   `valor` decimal(10,0) DEFAULT NULL,
   `fecha` date DEFAULT NULL,
-  `lugar` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idconglomerado` (`idconglomerado`),
   KEY `idmetrica` (`idmetrica`),
+  KEY `idregion` (`idregion`),
   CONSTRAINT `conglomerado_metrica_ibfk_1` FOREIGN KEY (`idconglomerado`) REFERENCES `conglomerado` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `conglomerado_metrica_ibfk_2` FOREIGN KEY (`idmetrica`) REFERENCES `metrica` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `conglomerado_metrica_ibfk_2` FOREIGN KEY (`idmetrica`) REFERENCES `metrica` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `conglomerado_metrica_ibfk_3` FOREIGN KEY (`idregion`) REFERENCES `region` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -128,54 +223,7 @@ LOCK TABLES `conglomerado_metrica` WRITE;
 /*!40000 ALTER TABLE `conglomerado_metrica` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `keyword`
---
 
-DROP TABLE IF EXISTS `keyword`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `keyword` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `value` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `value` (`value`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `keyword`
---
-
-LOCK TABLES `keyword` WRITE;
-/*!40000 ALTER TABLE `keyword` DISABLE KEYS */;
-INSERT INTO `keyword` VALUES (27,'@BancadaPCIC'),(14,'@bancadaPSchile'),(40,'@consejocultura'),(8,'@DiputadosDC'),(4,'@DiputadosRN'),(2,'@DiputadosUDI'),(16,'@Diputados_PC'),(39,'@MindepChile'),(34,'@MinDeSalud'),(37,'@MinisterioBBNN'),(35,'@MinMineriaCL'),(32,'@MintrabChile'),(29,'@min_interior'),(38,'@MMAChile'),(33,'@mop_chile'),(36,'@mtt_chile'),(11,'@ppddiputados'),(30,'@PrensaMINDEF'),(31,'@segegob'),(7,'@SenadoresDC'),(13,'@SenadoresPS'),(3,'@SenadoresRN'),(1,'@SenadoresUDI'),(9,'DC'),(23,'Evopoli'),(26,'IC'),(24,'MASRegión'),(28,'ME-O'),(22,'MIR'),(17,'PC'),(12,'PPD'),(10,'PRI'),(19,'PRO'),(18,'PRSD'),(15,'PS'),(21,'RD'),(20,'rev. democratica'),(6,'RN'),(5,'UDI');
-/*!40000 ALTER TABLE `keyword` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `metrica`
---
-
-DROP TABLE IF EXISTS `metrica`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `metrica` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `metrica`
---
-
-LOCK TABLES `metrica` WRITE;
-/*!40000 ALTER TABLE `metrica` DISABLE KEYS */;
-INSERT INTO `metrica` VALUES (1,'aprobacion'),(2,'sentimientoPositivo'),(3,'sentimientoNegativo'),(4,'sentimientoNeutro');
-/*!40000 ALTER TABLE `metrica` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `partido`
@@ -245,14 +293,16 @@ CREATE TABLE `partido_metrica` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `idpartido` int(11) NOT NULL,
   `idmetrica` int(11) NOT NULL,
+  `idregion` int(11) NOT NULL,
   `valor` decimal(10,0) DEFAULT NULL,
   `fecha` date DEFAULT NULL,
-  `lugar` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idpartido` (`idpartido`),
   KEY `idmetrica` (`idmetrica`),
+  KEY `idregion` (`idregion`),
   CONSTRAINT `partido_metrica_ibfk_1` FOREIGN KEY (`idmetrica`) REFERENCES `metrica` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `partido_metrica_ibfk_2` FOREIGN KEY (`idpartido`) REFERENCES `partido` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `partido_metrica_ibfk_2` FOREIGN KEY (`idpartido`) REFERENCES `partido` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `partido_metrica_ibfk_3` FOREIGN KEY (`idregion`) REFERENCES `region` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -336,14 +386,17 @@ CREATE TABLE `politico_metrica` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `idpolitico` int(11) NOT NULL,
   `idmetrica` int(11) NOT NULL,
+  `idregion` int(11) NOT NULL,
   `valor` float DEFAULT NULL,
   `fecha` date DEFAULT NULL,
   `lugar` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idpolitico` (`idpolitico`),
   KEY `idmetrica` (`idmetrica`),
+  KEY `idregion` (`idregion`),
   CONSTRAINT `politico_metrica_ibfk_1` FOREIGN KEY (`idpolitico`) REFERENCES `politico` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `politico_metrica_ibfk_2` FOREIGN KEY (`idmetrica`) REFERENCES `metrica` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `politico_metrica_ibfk_2` FOREIGN KEY (`idmetrica`) REFERENCES `metrica` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `politico_metrica_ibfk_3` FOREIGN KEY (`idregion`) REFERENCES `region` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

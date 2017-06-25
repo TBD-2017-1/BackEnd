@@ -1,6 +1,8 @@
 package PoliTweetsCL.Collector;
 
+import PoliTweetsCL.Core.BD.MongoDBController;
 import PoliTweetsCL.Core.BD.MySQLController;
+import PoliTweetsCL.Core.Model.Tweet;
 import PoliTweetsCL.Core.Resources.Config;
 import twitter4j.*;
 
@@ -8,6 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 
@@ -33,7 +36,7 @@ public class TwitterStreaming {
 			Properties prop = config.getPropertiesObj();
 
 			MySQLController sqlDB = new MySQLController(prop);
-			keywords = sqlDB.getKeywords();
+			keywords = sqlDB.getEntityKeywords();
 
 			TwitterListener listener = new TwitterListener(prop);
 
@@ -63,4 +66,5 @@ public class TwitterStreaming {
 	}
 
 	public boolean getStatus(){return isActive;}
+
 }

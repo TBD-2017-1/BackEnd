@@ -13,6 +13,7 @@
 		<class>model.PoliticoMetrica</class>
 		<class>model.Metrica</class>
 		<class>model.Keyword</class>
+		<class>model.Region</class>
 	</persistence-unit>
 </persistence>
 

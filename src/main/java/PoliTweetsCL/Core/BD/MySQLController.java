@@ -43,14 +43,14 @@ public class MySQLController {
         }
     }
 
-    public Set<String> getKeywords(){
+    public Set<String> getEntityKeywords(){
         try {
             /* Keywords */
             // create the java statement
             Statement st = conn.createStatement();
 
             // execute the query, and get a java resultset
-            ResultSet rs = st.executeQuery("SELECT * FROM keyword");
+            ResultSet rs = st.executeQuery("SELECT k.value as value FROM conglomerado_keyword c join keyword k on c.idkeyword = k.id");
 
             Set<String> keywords = new HashSet<>();
 
@@ -59,6 +59,25 @@ public class MySQLController {
                 keywords.add(rs.getString("value"));
             }
             st.close();
+
+            st = conn.createStatement();
+            rs = st.executeQuery("SELECT k.value as value FROM partido_keyword c join keyword k on c.idkeyword = k.id");
+
+            // get keyword value
+            while (rs.next()){
+                keywords.add(rs.getString("value"));
+            }
+            st.close();
+
+            st = conn.createStatement();
+            rs = st.executeQuery("SELECT k.value as value FROM politico_keyword c join keyword k on c.idkeyword = k.id");
+
+            // get keyword value
+            while (rs.next()){
+                keywords.add(rs.getString("value"));
+            }
+            st.close();
+
 
             /* Add Twitter username for mentions */
             st = conn.createStatement();
@@ -88,6 +107,32 @@ public class MySQLController {
             }
             st.close();
 
+
+            return keywords;
+
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+
+        return null;
+    }
+
+    public Set<String> getRegionesKeywords(){
+        try {
+            /* Keywords */
+            // create the java statement
+            Statement st = conn.createStatement();
+
+            // execute the query, and get a java resultset
+            ResultSet rs = st.executeQuery("SELECT k.value as value FROM region_keyword c join keyword k on c.idkeyword = k.id");
+
+            Set<String> keywords = new HashSet<>();
+
+            // get keyword value
+            while (rs.next()){
+                keywords.add(rs.getString("value"));
+            }
+            st.close();
 
             return keywords;
 
