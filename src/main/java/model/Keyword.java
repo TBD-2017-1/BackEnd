@@ -53,6 +53,15 @@ public class Keyword implements Serializable {
         inverseJoinColumns={ @JoinColumn(name="idpolitico", referencedColumnName="id") }
     )
     private List<Politico> politicos_keywords;
+    
+    @ManyToMany(cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
+    @JoinTable
+    (
+        name="region_keyword",
+        joinColumns={ @JoinColumn(name="idkeyword", referencedColumnName="id") },
+        inverseJoinColumns={ @JoinColumn(name="idregion", referencedColumnName="id") }
+    )
+    private List<Region> regiones_keywords;
 
     //Methods
     public Keyword() {
@@ -126,6 +135,24 @@ public class Keyword implements Serializable {
             }
         }
         this.politicos_keywords.removeAll(toRemove);
+    }
+
+    public List<Region> getRegiones_keywords() {
+        return regiones_keywords;
+    }
+    
+    public void addRegion(Region region){
+        this.regiones_keywords.add(region);
+    }
+    
+    public void removeRegion(Region region){
+        List<Region> toRemove = new ArrayList<>();
+        for (Region rk : this.regiones_keywords) {
+            if(rk.getId() == region.getId()){
+                toRemove.add(rk);
+            }
+        }
+        this.regiones_keywords.removeAll(toRemove);
     }
     
     public boolean isUnused(){
