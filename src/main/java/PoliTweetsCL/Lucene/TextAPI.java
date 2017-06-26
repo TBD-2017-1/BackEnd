@@ -477,7 +477,8 @@ public class TextAPI {
     }
 
     public String getRegion(Tweet tweet){
-        if(tweet == null || tweet.getGeoLocation().getLocation() == null) return null;
+        if(tweet == null || tweet.getUser().getLocation() == null || Objects.equals(tweet.getUser().getLocation().trim(), ""))
+            return null;
         try{
             // Preparar indice
             SpanishAnalyzer analyzer = new SpanishAnalyzer(Version.LUCENE_43);
