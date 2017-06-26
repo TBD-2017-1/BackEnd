@@ -43,6 +43,29 @@ INSERT INTO `admin` VALUES (1,'admin','admin');
 /*!40000 ALTER TABLE `admin` ENABLE KEYS */;
 UNLOCK TABLES;
 
+DROP TABLE IF EXISTS `region`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `region` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `codigo` VARCHAR(5) NOT NULL,
+  `nombre` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `nombre` (`nombre`),
+  UNIQUE KEY `codigo` (`codigo`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `region`
+--
+
+LOCK TABLES `region` WRITE;
+/*!40000 ALTER TABLE `region` DISABLE KEYS */;
+INSERT INTO `region` VALUES (1,'I','Tarapacá'),(2,'II','Antofagasta'),(3,'III','Atacama'),(4,'IV','Coquimbo'),(5,'V','Valparaíso'),(6,'VI','O\'Higgins'),(7,'VII','Maule'),(8,'VIII','Biobío'),(9,'IX','Araucanía'),(10,'X','Los Lagos'),(11,'XI','Aysén'),(12,'XII','Magallanes'),(13,'RM','Metropolitana de Santiago'),(14,'XIV','Los Ríos'),(15,'XV','Arica y Parinacota');
+/*!40000 ALTER TABLE `region` ENABLE KEYS */;
+UNLOCK TABLES;
+
 --
 -- Table structure for table `conglomerado`
 --
@@ -154,6 +177,24 @@ INSERT INTO `keyword` VALUES (27,'@BancadaPCIC'),(14,'@bancadaPSchile'),(40,'@co
 UNLOCK TABLES;
 
 --
+-- Table structure for table `region_keyword`
+--
+
+DROP TABLE IF EXISTS `region_keyword`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `region_keyword` (
+  `idkeyword` int(11) NOT NULL,
+  `idregion` int(11) NOT NULL,
+  PRIMARY KEY (`idregion`,`idkeyword`),
+  KEY `idkeyword` (`idkeyword`),
+  KEY `idregion` (`idregion`),
+  CONSTRAINT `region_keyword_ibfk_1` FOREIGN KEY (`idregion`) REFERENCES `partido` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `region_keyword_ibfk_2` FOREIGN KEY (`idkeyword`) REFERENCES `keyword` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `metrica`
 --
 
@@ -176,6 +217,38 @@ LOCK TABLES `metrica` WRITE;
 INSERT INTO `metrica` VALUES (1,'aprobacion'),(2,'sentimientoPositivo'),(3,'sentimientoNegativo'),(4,'sentimientoNeutro');
 /*!40000 ALTER TABLE `metrica` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `region_metrica`
+--
+
+DROP TABLE IF EXISTS `region_metrica`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `region_metrica` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `idregion` int(11) NOT NULL,
+  `idmetrica` int(11) NOT NULL,
+  `valor` decimal(10,0) DEFAULT NULL,
+  `fecha` date DEFAULT NULL,
+  `lugar` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idregion` (`idregion`),
+  KEY `idmetrica` (`idmetrica`),
+  CONSTRAINT `region_metrica_ibfk_1` FOREIGN KEY (`idmetrica`) REFERENCES `metrica` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `region_metrica_ibfk_2` FOREIGN KEY (`idregion`) REFERENCES `region` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `region_metrica`
+--
+
+LOCK TABLES `region_metrica` WRITE;
+/*!40000 ALTER TABLE `region_metrica` DISABLE KEYS */;
+/*!40000 ALTER TABLE `region_metrica` ENABLE KEYS */;
+UNLOCK TABLES;
+
 
 --
 -- Table structure for table `partido`
