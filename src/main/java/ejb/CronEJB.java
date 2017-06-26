@@ -28,6 +28,8 @@ public class CronEJB {
     @EJB
     private PoliticoFacade politicoEJB;
     @EJB
+    private RegionFacade regionEJB;
+    @EJB
     private MetricaFacade metricaEJB;
     @EJB
     private ConglomeradoMetricaFacade conglomeradoMetricaEJB;
@@ -123,6 +125,7 @@ public class CronEJB {
             doMetricasPoliticos();
             doMetricasPartidos();
             doMetricasConglomerados();
+            doMetricasRegiones();
         }catch (Exception ex){
             logger.severe("Error al crear metrica: "+ Arrays.toString(ex.getStackTrace()));
             ex.printStackTrace();
@@ -339,6 +342,64 @@ public class CronEJB {
             //Antes de calculaba: 
             //      sentimiento(Positivo|Negativo|Neutral) = (positive|negative|neutral)Count/(float)hits;
         }
+    }
+
+    private void doMetricasRegiones() throws Exception {
+        List<Region> regiones = regionEJB.findAll();
+        // para cada Conglomerado
+        for (Region region:regiones) {
+            // hacer busqueda
+            int hits = textAPI.buscarRegion(region.getCodigo());
+
+            // obtener resultados de la busqueda anterior
+            int positiveCount = textAPI.getPositiveCount();
+            int negativeCount = textAPI.getNegativeCount();
+            int neutralCount = textAPI.getNeutralCount();
+            float aprobacion;
+            if(hits != 0){
+                aprobacion = 50 + 50 * (positiveCount-negativeCount)/(float)hits; // 50% base + (%pos - %neg)/2
+            }else{
+                aprobacion = 50;
+            }
+
+            //Guardar metrica en BD
+            Metrica metrica;
+            int idregion = region.getId();
+            int idmetrica;
+            String lugar = "Desconocido";
+            String query;
+
+            //Aprobacion
+            metrica = metricaEJB.findByName("aprobacion");
+            idmetrica = metrica.getId();
+            query = "INSERT INTO region_metrica (idregion, idmetrica, valor, lugar, fecha) "
+                    + "VALUES ("+idregion+", "+idmetrica+", "+aprobacion+", '"+lugar+"', '"+this.formattedNow+"')";
+            mysql.execUpdate(query);
+
+            //Sentimiento Positivo
+            metrica = metricaEJB.findByName("sentimientoPositivo");
+            idmetrica = metrica.getId();
+            query = "INSERT INTO region_metrica (idregion, idmetrica, valor, lugar, fecha) "
+                    + "VALUES ("+idregion+", "+idmetrica+", "+(float)positiveCount+", '"+lugar+"', '"+this.formattedNow+"')";
+            mysql.execUpdate(query);
+
+            //Sentimiento Negativo
+            metrica = metricaEJB.findByName("sentimientoNegativo");
+            idmetrica = metrica.getId();
+            query = "INSERT INTO region_metrica (idregion, idmetrica, valor, lugar, fecha) "
+                    + "VALUES ("+idregion+", "+idmetrica+", "+(float)negativeCount+", '"+lugar+"', '"+this.formattedNow+"')";
+            mysql.execUpdate(query);
+
+            //Sentimient Neutro
+            metrica = metricaEJB.findByName("sentimientoNeutro");
+            idmetrica = metrica.getId();
+            query = "INSERT INTO region_metrica (idregion, idmetrica, valor, lugar, fecha) "
+                    + "VALUES ("+idregion+", "+idmetrica+", "+(float)neutralCount+", '"+lugar+"', '"+this.formattedNow+"')";
+            mysql.execUpdate(query);
+
+            //Antes de calculaba:
+            //      sentimiento(Positivo|Negativo|Neutral) = (positive|negative|neutral)Count/(float)hits;
+        }
 
     }
 
@@ -437,7 +498,7 @@ public class CronEJB {
                         + "VALUES (" + idpolitico + ", " + idmetrica + ", " + (float) neutralCount + ", '" + lugar + "', '" + this.formattedNow + "')";
                 mysql.execUpdate(query);
             }
-            logger.info("Politico listo");
+            logger.info("Politicos listo");
 
             // PARTIDOS
             List<Partido> partidos = partidoEJB.findAll();
@@ -490,7 +551,7 @@ public class CronEJB {
                         + "VALUES (" + idpartido + ", " + idmetrica + ", " + (float) neutralCount + ", '" + lugar + "', '" + this.formattedNow + "')";
                 mysql.execUpdate(query);
             }
-            logger.info("Partido listo");
+            logger.info("Partidos listo");
 
             // CONGLOMERADOS
             List<Conglomerado> conglomerados = conglomeradoEJB.findAll();
@@ -543,7 +604,60 @@ public class CronEJB {
                         + "VALUES (" + idconglomerado + ", " + idmetrica + ", " + (float) neutralCount + ", '" + lugar + "', '" + this.formattedNow + "')";
                 mysql.execUpdate(query);
             }
-            logger.info("Conglomerado listo");
+            logger.info("Conglomerados listo");
+
+            // REGIONES
+            List<Region> regiones = conglomeradoEJB.findAll();
+            // para cada Conglomerado
+            for (Region region : regiones) {
+                // obtener resultados de la busqueda anterior
+                int positiveCount = ThreadLocalRandom.current().nextInt(0, 200 + 1);
+                int negativeCount = ThreadLocalRandom.current().nextInt(0, 200 + 1);
+                int neutralCount = ThreadLocalRandom.current().nextInt(0, 200 + 1);
+                int hits = positiveCount + negativeCount + neutralCount;
+                float aprobacion;
+                if (hits != 0) {
+                    aprobacion = 50 + 50 * (positiveCount - negativeCount) / (float) hits; // 50% base + (%pos - %neg)/2
+                } else {
+                    aprobacion = 50;
+                }
+
+                //Guardar metrica en BD
+                Metrica metrica;
+                int idregion = region.getId();
+                int idmetrica;
+                String lugar = "Desconocido";
+                String query;
+
+                //Aprobacion
+                metrica = metricaEJB.findByName("aprobacion");
+                idmetrica = metrica.getId();
+                query = "INSERT INTO region_metrica (idregion, idmetrica, valor, lugar, fecha) "
+                        + "VALUES ("+idregion+", "+idmetrica+", "+aprobacion+", '"+lugar+"', '"+this.formattedNow+"')";
+                mysql.execUpdate(query);
+
+                //Sentimiento Positivo
+                metrica = metricaEJB.findByName("sentimientoPositivo");
+                idmetrica = metrica.getId();
+                query = "INSERT INTO region_metrica (idregion, idmetrica, valor, lugar, fecha) "
+                        + "VALUES ("+idregion+", "+idmetrica+", "+(float)positiveCount+", '"+lugar+"', '"+this.formattedNow+"')";
+                mysql.execUpdate(query);
+
+                //Sentimiento Negativo
+                metrica = metricaEJB.findByName("sentimientoNegativo");
+                idmetrica = metrica.getId();
+                query = "INSERT INTO region_metrica (idregion, idmetrica, valor, lugar, fecha) "
+                        + "VALUES ("+idregion+", "+idmetrica+", "+(float)negativeCount+", '"+lugar+"', '"+this.formattedNow+"')";
+                mysql.execUpdate(query);
+
+                //Sentimient Neutro
+                metrica = metricaEJB.findByName("sentimientoNeutro");
+                idmetrica = metrica.getId();
+                query = "INSERT INTO region_metrica (idregion, idmetrica, valor, lugar, fecha) "
+                        + "VALUES ("+idregion+", "+idmetrica+", "+(float)neutralCount+", '"+lugar+"', '"+this.formattedNow+"')";
+                mysql.execUpdate(query);
+            }
+            logger.info("Regiones listo");
         }
     }
 

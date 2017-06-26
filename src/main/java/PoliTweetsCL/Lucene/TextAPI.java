@@ -5,10 +5,8 @@ import PoliTweetsCL.Core.Resources.Config;
 import facade.ConglomeradoFacade;
 import facade.PartidoFacade;
 import facade.PoliticoFacade;
-import model.Conglomerado;
-import model.Keyword;
-import model.Partido;
-import model.Politico;
+import facade.RegionFacade;
+import model.*;
 import org.apache.lucene.analysis.es.SpanishAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -31,9 +29,12 @@ import javax.ejb.Singleton;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 import javax.ejb.LocalBean;
+import javax.ejb.Startup;
 
+@Startup
 @Singleton
 @LocalBean
 public class TextAPI {
@@ -41,11 +42,13 @@ public class TextAPI {
     @EJB private ConglomeradoFacade conglomeradosEJB;
     @EJB private PartidoFacade partidosEJB;
     @EJB private PoliticoFacade politicosEJB;
+    @EJB private RegionFacade regionesEJB;
 
     private Logger logger = Logger.getLogger(getClass().getName());
 
     private Directory dirTweets;
     private Directory dirMenciones;
+    private Directory dirRegiones;
     private boolean isRamDir;
 
     private int hitCount = 0;
@@ -68,6 +71,21 @@ public class TextAPI {
     @PostConstruct
     private void init(){
         isRamDir = config.get("lucene.useRamDirectory").equals("true");
+
+        // load indexes
+        loadIndex();
+    }
+
+    public void loadIndex(){
+        if(dirTweets ==null) {
+            nuevoIndiceTweets();
+        }
+        if(dirMenciones ==null) {
+            nuevoIndiceMenciones();
+        }
+        if(dirRegiones ==null) {
+            nuevoIndiceRegiones();
+        }
     }
 
     public void nuevoIndiceTweets(){
@@ -193,6 +211,54 @@ public class TextAPI {
 
     }
 
+    public void nuevoIndiceRegiones(){
+        try {
+            if(dirRegiones !=null) {
+                dirRegiones.close();
+                dirRegiones = null;
+            }
+            if(isRamDir){
+                dirRegiones = new RAMDirectory();
+            }else{
+                dirRegiones = FSDirectory.open( new File("indiceRegiones/"));// directorio donde se guarda el indice
+            }
+            SpanishAnalyzer analyzer = new SpanishAnalyzer(Version.LUCENE_43);
+            IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_43,analyzer);
+            config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+            IndexWriter w = new IndexWriter(dirRegiones, config);
+
+
+            // Agregar Keywords por region
+            List<Region> regiones = regionesEJB.findAll();
+            for (Region region:regiones) {
+                Document doc = new Document();
+
+                // obtener keywords
+                List<Keyword> keywords = region.getKeywords();
+                String texto = "";
+                for (Keyword keyword: keywords) {
+                    texto += " "+keyword.getValue();
+                }
+
+                // agregar datos al documento
+                doc.add(new TextField("texto", texto, Field.Store.NO));
+                doc.add(new StoredField("nombre", region.getNombre()));
+                doc.add(new StoredField("codigo", region.getCodigo()));
+
+                // Agregar documento al indice
+                w.addDocument(doc);
+            }
+
+            w.close();
+
+            logger.info("Se ha creado un nuevo indice de Regiones");
+        }catch (Exception ex){
+            ex.printStackTrace();
+            logger.info("NO se ha creado un nuevo indice");
+        }
+
+    }
+
 
     public int addTweets(Tweet[] tweets){// metodo que crea el indice con todos los archivos dentro del path
 
@@ -212,12 +278,18 @@ public class TextAPI {
                     texto += " "+tweet.getRetweetedStatus().getText(); // agregar RT
                 }
 
-                // agregar datos al documento
-                doc.add(new TextField("texto", texto, Field.Store.NO));
-                doc.add(new StoredField("sentimiento", tweet.getSentimiento()));
+                // obtener region
+                String region = getRegion(tweet);
 
-                // Agregar documento al indice
-                w.addDocument(doc);
+                if(region!=null) {
+                    // agregar datos al documento
+                    doc.add(new TextField("texto", texto, Field.Store.NO));
+                    doc.add(new TextField("region", region, Field.Store.NO));
+                    doc.add(new StoredField("sentimiento", tweet.getSentimiento()));
+
+                    // Agregar documento al indice
+                    w.addDocument(doc);
+                }
             }
 
             // cerrar indice
@@ -268,13 +340,75 @@ public class TextAPI {
             // actualizar cache de consulta
             for (ScoreDoc hit : hits) {
                 Document doc = searcher.doc(hit.doc);
+
                 float sentiment = Float.valueOf(doc.get("sentimiento"));
-                if (sentiment == 0){
+                if (sentiment == 0) {
                     neutralCount++;
-                }else if (sentiment > 0){
+                } else if (sentiment > 0) {
                     positiveCount++;
                     positiveValue += sentiment;
-                }else if (sentiment < 0){
+                } else if (sentiment < 0) {
+                    negativeCount++;
+                    negativeValue += sentiment;
+                }
+
+            }
+
+            // cerrar indice
+            reader.close();
+
+            // retornar cantidad de hits
+            return collector.getTotalHits();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public int buscarRegion(String codigoRegion){// metodo para busqueda dada alguna palabra
+        // reiniciar la cache de consulta
+        this.hitCount = 0;
+        this.positiveCount = 0;
+        this.negativeCount = 0;
+        this.neutralCount = 0;
+        this.positiveValue = 0;
+        this.negativeValue = 0;
+
+        try{
+            // Preparar indice
+            SpanishAnalyzer analyzer = new SpanishAnalyzer(Version.LUCENE_43);
+            IndexReader reader = DirectoryReader.open(dirTweets);
+            IndexSearcher searcher = new IndexSearcher(reader);
+            QueryParser parser = new QueryParser(Version.LUCENE_43,"region", analyzer);
+
+            // construir consulta
+            BooleanQuery bq =  new BooleanQuery();
+            Query query = parser.parse(QueryParser.escape(codigoRegion));//la palabra que se quiere buscar
+            bq.add(query, BooleanClause.Occur.SHOULD);
+
+            bq.setMinimumNumberShouldMatch(1);
+
+            // buscar TODAS las coincidencias
+            TotalHitCountCollector collector = new TotalHitCountCollector();
+            searcher.search(bq,collector);
+            this.hitCount = collector.getTotalHits();
+            TopDocs results = searcher.search(bq,Math.max(1, this.hitCount));
+
+            // Guardar los hits
+            ScoreDoc[] hits = results.scoreDocs;
+
+            // actualizar cache de consulta
+            for (ScoreDoc hit : hits) {
+                Document doc = searcher.doc(hit.doc);
+
+                float sentiment = Float.valueOf(doc.get("sentimiento"));
+                if (sentiment == 0) {
+                    neutralCount++;
+                } else if (sentiment > 0) {
+                    positiveCount++;
+                    positiveValue += sentiment;
+                } else if (sentiment < 0) {
                     negativeCount++;
                     negativeValue += sentiment;
                 }
@@ -336,6 +470,48 @@ public class TextAPI {
 
             // retornar cantidad de hits
             return menciones;
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getRegion(Tweet tweet){
+        try{
+            // Preparar indice
+            SpanishAnalyzer analyzer = new SpanishAnalyzer(Version.LUCENE_43);
+            IndexReader reader = DirectoryReader.open(dirRegiones);
+            IndexSearcher searcher = new IndexSearcher(reader);
+            QueryParser parser = new QueryParser(Version.LUCENE_43,"texto", analyzer);
+
+            // construir consulta
+            BooleanQuery bq =  new BooleanQuery();
+            Query query = parser.parse(QueryParser.escape(tweet.getUser().getLocation()));//la palabra que se quiere buscar
+            bq.add(query, BooleanClause.Occur.SHOULD);
+            bq.setMinimumNumberShouldMatch(1);
+
+            // buscar 3 mejores coincidencias
+            TotalHitCountCollector collector = new TotalHitCountCollector();
+            searcher.search(bq,collector);
+            this.hitCount = collector.getTotalHits();
+            TopDocs results = searcher.search(bq,1);
+
+            if(results.totalHits == 0) return null;
+
+            // Guardar los hits
+            ScoreDoc hit = results.scoreDocs[0];
+
+            String region;
+
+            Document doc = searcher.doc(hit.doc);
+
+            region = doc.get("codigo");
+
+            // cerrar indice
+            reader.close();
+
+            // retornar cantidad de hits
+            return region;
         }catch (Exception ex){
             ex.printStackTrace();
         }
