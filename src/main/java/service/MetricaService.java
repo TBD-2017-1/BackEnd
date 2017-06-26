@@ -198,6 +198,21 @@ public class MetricaService {
 
         return Response.status(Response.Status.OK).entity(response.toJSONString()).type(MediaType.APPLICATION_JSON).build();
     }
+    
+    @GET
+    @Path("{metrica}/ranking/politicosMenos")
+    @Produces({"application/xml", "application/json"})
+    public Response getRankMenosQueridos(@PathParam("metrica") String nombreMetrica) {
+        Date now = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedNow = formatter.format(now);
+
+        MySQLController mysql = new MySQLController(config.getPropertiesObj());
+
+        JSONObject response = mysql.getRankingMetricaPoliticoASC("aprobacion",formattedNow);
+
+        return Response.status(Response.Status.OK).entity(response.toJSONString()).type(MediaType.APPLICATION_JSON).build();
+    }
 
     @GET
     @Path("{metrica}/ranking/partidos")

@@ -188,6 +188,39 @@ public class MySQLController {
         }
         return null;
     }
+    
+    public JSONObject getRankingMetricaPoliticoASC(String metrica, String fecha){
+        try {
+            String query = "SELECT CONCAT(p.nombre, ' ', p.apellido) AS nombre, m.valor AS valor\n" +
+                    "FROM ( SELECT id FROM metrica WHERE nombre = '" + metrica + "') a\n" +
+                    "    JOIN politico_metrica m ON a.id = m.idmetrica\n" +
+                    "    JOIN politico p ON m.idpolitico = p.id\n" +
+                    "WHERE m.fecha = '" + fecha + "' ORDER BY valor ASC LIMIT 10";
+
+            Statement st = conn.createStatement();
+            ResultSet result = st.executeQuery(query);
+
+            // get results
+            JSONArray array = new JSONArray();
+            JSONObject row;
+            while (result.next()) {
+                row = new JSONObject();
+                row.put("nombre", result.getString("nombre"));
+                row.put("valor", result.getDouble("valor"));
+                array.add(row);
+            }
+
+            st.close();
+
+            row = new JSONObject();
+            row.put("ranking",array);
+
+            return row;
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return null;
+    }
 
     public JSONObject getRankingMetricaEntidad(String entidad,String metrica, String fecha){
         try {
