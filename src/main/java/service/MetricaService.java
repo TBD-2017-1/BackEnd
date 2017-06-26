@@ -4,8 +4,7 @@ import PoliTweetsCL.Core.BD.MySQLController;
 import PoliTweetsCL.Core.Resources.Config;
 import ejb.CronEJB;
 import ejb.PoliticoMetricaFacadeEJB;
-import facade.ConglomeradoFacade;
-import facade.ConglomeradoMetricaFacade;
+import facade.*;
 
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
@@ -24,21 +23,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import facade.MetricaFacade;
-import facade.PartidoFacade;
-import facade.PartidoMetricaFacade;
-import facade.PoliticoFacade;
-import facade.PoliticoMetricaFacade;
 import java.util.ArrayList;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import model.Conglomerado;
-import model.ConglomeradoMetrica;
-import model.Metrica;
-import model.Partido;
-import model.PartidoMetrica;
-import model.PoliticoMetrica;
-import model.Politico;
+
+import model.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -53,6 +42,8 @@ public class MetricaService {
     ConglomeradoMetricaFacade metricaConglomeradoEJB;
     @EJB
     ConglomeradoFacade conglomeradoEJB;
+    @EJB
+    RegionFacade regionEJB;
     //EJB Partidos
     @EJB
     PartidoMetricaFacade metricaPartidoEJB;
@@ -104,7 +95,35 @@ public class MetricaService {
         }
 
         if(newListCM.size() > 7){
-            newListCM =  newListCM.subList(0, 6);
+            newListCM =  newListCM.subList(0, 7);
+        }
+        Collections.reverse(newListCM);
+        return newListCM;
+    }
+
+    @GET
+    @Path("{metrica}/regiones")
+    @Produces({"application/xml", "application/json"})
+    public List<RegionMetrica> getMetricaRegion(@PathParam("metrica") String nombreMetrica) {
+        return metricaFacadeEJB.findByName(nombreMetrica).getRegionMetrica();
+    }
+
+    @GET
+    @Path("{metrica}/regiones/{id}")
+    @Produces({"application/xml", "application/json"})
+    public List<RegionMetrica> getMetricaRegion(@PathParam("metrica") String nombreMetrica, @PathParam("id") Integer idRegion) {
+        Region c = regionEJB.find(idRegion);
+        Metrica m = metricaFacadeEJB.findByName(nombreMetrica);
+        List<RegionMetrica> listCM = m.getRegionMetrica();//Se obtienen relaciones metrica_conglomerado.
+        List<RegionMetrica> newListCM = new ArrayList<>();
+        for(RegionMetrica cm : listCM){
+            if (cm.getRegion().getId() == c.getId()){
+                newListCM.add(cm);
+            }
+        }
+
+        if(newListCM.size() > 7){
+            newListCM =  newListCM.subList(0, 7);
         }
         Collections.reverse(newListCM);
         return newListCM;
@@ -132,7 +151,7 @@ public class MetricaService {
         }
 
         if(newListPM.size() > 7){
-            newListPM =  newListPM.subList(0, 6);
+            newListPM =  newListPM.subList(0, 7);
         }
         Collections.reverse(newListPM);
         return newListPM;
@@ -159,7 +178,7 @@ public class MetricaService {
             }
         }
         if(newListPM.size() > 7){
-            newListPM =  newListPM.subList(0, 6);
+            newListPM =  newListPM.subList(0, 7);
         }
         Collections.reverse(newListPM);
         return newListPM;
@@ -214,7 +233,7 @@ public class MetricaService {
 	
     @POST
     @Path("testCreate")
-    //@Consumes({"application/xml", "application/json"})
+    @Consumes({"application/xml", "application/json"})
     public void testCreate() {
         MySQLController mysql = new MySQLController(config.getPropertiesObj());
         mysql.dropMetricas();

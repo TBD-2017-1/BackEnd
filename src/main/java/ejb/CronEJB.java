@@ -607,7 +607,7 @@ public class CronEJB {
             logger.info("Conglomerados listo");
 
             // REGIONES
-            List<Region> regiones = conglomeradoEJB.findAll();
+            List<Region> regiones = regionEJB.findAll();
             // para cada Conglomerado
             for (Region region : regiones) {
                 // obtener resultados de la busqueda anterior

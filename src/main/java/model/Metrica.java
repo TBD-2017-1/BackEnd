@@ -37,6 +37,10 @@ public class Metrica implements Serializable {
     @OneToMany(mappedBy="metrica_politico")
     @OrderBy("fecha DESC")
     private List<PoliticoMetrica> politicoMetrica;
+
+    @OneToMany(mappedBy="metrica_region")
+    @OrderBy("fecha DESC")
+    private List<RegionMetrica> regionMetrica;
     
     //Methods
     public Metrica() {
@@ -68,6 +72,10 @@ public class Metrica implements Serializable {
 
     public List<PoliticoMetrica> getPoliticoMetrica() {
         return politicoMetrica;
+    }
+
+    public List<RegionMetrica> getRegionMetrica() {
+        return regionMetrica;
     }
     
 }
