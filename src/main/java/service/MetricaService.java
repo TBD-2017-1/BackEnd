@@ -211,7 +211,7 @@ public class MetricaService {
 
         JSONObject response = mysql.getRankingMetricaEntidad("partido","aprobacion",formattedNow);
 
-        return Response.status(Response.Status.OK).entity(response).type(MediaType.APPLICATION_JSON).build();
+        return Response.status(Response.Status.OK).entity(response.toJSONString()).type(MediaType.APPLICATION_JSON).build();
     }
 
     @GET
@@ -226,7 +226,7 @@ public class MetricaService {
 
         JSONObject response = mysql.getRankingMetricaEntidad("conglomerado","aprobacion",formattedNow);
 
-        return Response.status(Response.Status.OK).entity(response).type(MediaType.APPLICATION_JSON).build();
+        return Response.status(Response.Status.OK).entity(response.toJSONString()).type(MediaType.APPLICATION_JSON).build();
     }
 
 
