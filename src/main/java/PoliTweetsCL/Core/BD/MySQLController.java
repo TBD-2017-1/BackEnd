@@ -50,11 +50,25 @@ public class MySQLController {
             Statement st = conn.createStatement();
 
             // execute the query, and get a java resultset
-            ResultSet rs = st.executeQuery("SELECT * FROM keyword");
+            ResultSet rs = st.executeQuery("SELECT k.value as value FROM keyword k join conglomerado_keyword c on k.id = c.idkeyword");
 
             Set<String> keywords = new HashSet<>();
 
             // get keyword value
+            while (rs.next()){
+                keywords.add(rs.getString("value"));
+            }
+            st.close();
+
+            st = conn.createStatement();
+            rs = st.executeQuery("SELECT k.value as value FROM keyword k join partido_keyword c on k.id = c.idkeyword");
+            while (rs.next()){
+                keywords.add(rs.getString("value"));
+            }
+            st.close();
+
+            st = conn.createStatement();
+            rs = st.executeQuery("SELECT k.value as value FROM keyword k join politico_keyword c on k.id = c.idkeyword");
             while (rs.next()){
                 keywords.add(rs.getString("value"));
             }
